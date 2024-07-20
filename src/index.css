@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "shabnam";
+  src: url("./assets/font/shabnam/Shabnam-Medium-FD.ttf");
+}
+
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+} */
+
+:root {
+  --side-bar-width: 250px;
+  --main-padding: 10px;
+  --main-border-radius: 6px;
+}
+
+body {
+  font-family: "shabnam";
+}
+
+@media (max-width: 900px) {
+  :root {
+    --side-bar-width: 100px;
+  }
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+}
+
+/* side bar starts */
+.side-bar {
+  position: fixed;
+  /* right: 0; */
+
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  transition: 0.3s ease-in-out;
+  z-index: 999;
+  padding: var(--main-padding);
+  margin-left: 5px;
+}
+
+.side-bar .content {
+  background-color: #ebeeef;
+  height: 100%;
+  border-radius: var(--main-border-radius);
+}
+
+.side-bar.open {
+  right: 0;
+}
+
+/* side bar ends */
+/* header starts */
+.header {
+  position: sticky;
+  top: 0;
+  padding: var(--main-padding);
+  background-color: #fff;
+}
+
+.header .content {
+  background-color: rgb(217 217 217);
+  border-radius: var(--main-border-radius);
+  padding: var(--main-padding);
+}
+/* header ends */
+
+/* main starts */
+.main-wrapper {
+  /* grid-area: 1/2/1/3; */
+  transition: 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  padding: var(--main-padding);
+}
+
+.main .content {
+  /* background-color: rgb(101, 221, 101); */
+  border-radius: var(--main-border-radius);
+}
+/* main ends */
+
+/* responsive starts  */
+@media (max-width: 1024px) {
+  /* .side-bar {
+    right: -250px;
+  } */
+
+  .main-wrapper {
+    grid-area: 1/1/1/3;
+  }
+}
+/* responsive ends  */
