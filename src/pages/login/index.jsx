@@ -27,6 +27,8 @@ import { IoMdClose } from "react-icons/io";
 import Cookies from "js-cookie";
 import { redirect, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/auth";
+import { loginSchema } from "../../validations/schemas/user";
+import Api from "../../axios/api";
 
 const loginFormControlStyles = {
   width: "100%",
@@ -36,12 +38,6 @@ const loginFormControlStyles = {
   "& input": { color: "#fff" },
   "& svg": { color: "#fff" },
 };
-
-const loginFieldsSchema = z.object({
-  username: z.string().min(1, "نام کاربری الزامی است."),
-  password: z.string().min(1, "رمز عبور الزامی است."),
-  remember_me: z.boolean(),
-});
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -57,18 +53,15 @@ const Login = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(loginFieldsSchema),
+    resolver: zodResolver(loginSchema),
   });
 
-  const handleLogin = async (data) => {
+  const handleLogin = async ({ userName, password, remember_me }) => {
     try {
-      const res = await axios.post(
-        "https://iroriginaltest.com/api/Account/GetToken",
-        {
-          userName: data.username,
-          password: data.password,
-        }
-      );
+      const res = await Api.post("/Account/GetToken", {
+        userName,
+        password,
+      });
 
       Cookies.set("token", res.data.result, { expires: 1, path: "" });
 
@@ -117,13 +110,13 @@ const Login = () => {
             نام کاربری
           </InputLabel>
           <OutlinedInput
-            {...register("username")}
-            id="username"
+            {...register("userName")}
+            id="userName"
             type="text"
             label="username"
           />
-          {errors.username && (
-            <span className="text-red-400">{errors.username.message}</span>
+          {errors.userName && (
+            <span className="text-red-400">{errors.userName.message}</span>
           )}
         </FormControl>
         <FormControl sx={loginFormControlStyles} variant="outlined">
