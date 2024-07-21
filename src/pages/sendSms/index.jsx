@@ -1,14 +1,19 @@
 import {
   Button,
+  Chip,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   IconButton,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   Snackbar,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import Api from "../../axios/api";
 import Cookies from "js-cookie";
@@ -16,28 +21,25 @@ import { IoMdClose } from "react-icons/io";
 import { BiSad } from "react-icons/bi";
 import ThreeDotsLoading from "../../components/ThreeDotLoading";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { isValid, z } from "zod";
 import { sendSMSSchema } from "../../validations/schemas/panelSms";
 import { useSnackbar } from "../../contexts/snackbar";
+import SendToMany from "./components/SendToMany";
+import SubmitBtn from "../../components/SubmitBtn";
+import SendToSingle from "./components/SendToSingle";
 
 export default function SendSms() {
   const [notAuthorized, setNotAuthorized] = useState(false);
-  const [selectBoxValue, setSelectBoxValue] = useState("");
-  const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
+
+  const [number, setNumber] = useState("");
+
+  const phoneRef = useRef(null);
+
+  const [how, setHow] = useState("single");
 
   const [messages, setMessages] = useState([]);
+
   const token = Cookies.get("token");
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting, isSubmitted },
-  } = useForm({
-    resolver: zodResolver(sendSMSSchema),
-  });
-
-  const { setShowSnackbar } = useSnackbar();
 
   const getSmsCategories = async () => {
     try {
@@ -56,25 +58,6 @@ export default function SendSms() {
   useEffect(() => {
     getSmsCategories();
   }, []);
-  const submitHandler = async (data) => {
-    if (!selectedValue) return;
-
-    try {
-      const res = await Api.post("/PanelSms/SendSmsToAnyOne", {
-        token,
-        text: selectedValue,
-        phoneNumber: data.phoneNumber,
-      });
-
-      setShowSnackbar("پیام ارسال شد.");
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setShowSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
-      } else {
-        setShowSnackbar("خطا در برقراری ارتباط");
-      }
-    }
-  };
 
   return (
     <>
@@ -85,63 +68,39 @@ export default function SendSms() {
         </div>
       ) : (
         <>
-          <form
-            action="#"
-            onSubmit={handleSubmit(submitHandler)}
-            className="max-w-96 mx-auto mt-5"
-          >
-            <FormControl fullWidth className="mb-3">
-              <InputLabel id="message-category">دسته بندی</InputLabel>
-              <Select
-                labelId="message-category"
-                id="messega-cateogyr-select"
-                value={selectBoxValue}
-                label="دسته بندی"
-                onChange={(e) => setSelectBoxValue(e.target.value)}
+          <div className="max-w-96 mx-auto mt-5">
+            <FormControl className="mb-5">
+              <FormLabel id="demo-radio-buttons-group-label">
+                نحوه ارسال
+              </FormLabel>
+              <RadioGroup
+                defaultValue={how}
+                name="how-to-send-radio-group"
+                value={how}
+                onChange={(e) => setHow(e.target.value)}
               >
-                {messages.map((message) => (
-                  <MenuItem
-                    value={message.text}
-                    onClick={() => {
-                      setSelectedValue(message.text);
-                    }}
-                    key={Math.random()}
-                  >
-                    {message.title}
-                  </MenuItem>
-                ))}
-              </Select>
+                <FormControlLabel
+                  value="single"
+                  control={<Radio />}
+                  label="تکی"
+                />
+                <FormControlLabel
+                  value="multiple"
+                  control={<Radio />}
+                  label="چندتایی"
+                />
+              </RadioGroup>
             </FormControl>
-            {isSubmitted && !selectedValue && (
-              <span className="text-red-400 block mb-2">
-                لطفا یک گزینه را انتخاب کنید.
-              </span>
-            )}
-
-            <TextField
-              fullWidth
-              className="mb-3"
-              id="phone"
-              label="شماره موبایل"
-              {...register("phoneNumber")}
-            />
-            {errors.phoneNumber && (
-              <span className="text-red-400 block mb-2">
-                {errors.phoneNumber.message}
-              </span>
-            )}
-
-            <Button
-              variant="contained"
-              type="submit"
-              className="w-full h-12 flex items-center justify-center bg-gray-500"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? <ThreeDotsLoading /> : "ارسال"}
-            </Button>
-          </form>
+          </div>
+          {how === "single" ? (
+            <SendToSingle messages={messages} />
+          ) : (
+            <SendToMany messages={messages} />
+          )}
         </>
       )}
+
+      
     </>
   );
 }
