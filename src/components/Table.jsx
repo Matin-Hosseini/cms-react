@@ -118,7 +118,6 @@ export default function Table({ customers }) {
 
   return (
     <>
-      {console.log(customers.length)}
       <div style={{ height: 600, width: "100%" }}>
         <DataGrid
           sx={{ "& .MuiDataGrid-cell:focus": { outline: "none" } }}
