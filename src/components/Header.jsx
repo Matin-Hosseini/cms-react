@@ -22,8 +22,6 @@ const Header = ({ onSidebar }) => {
   const open = Boolean(anchorEl);
 
   const { userInfo, isLoggedIn } = useAuthContext();
-  console.log(userInfo);
-  console.log(isLoggedIn);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

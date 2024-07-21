@@ -7,12 +7,10 @@ import Api from "../../axios/api";
 import Cookies from "js-cookie";
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import SubmitBtn from "../../components/SubmitBtn";
 
-const schema = z.object({
-  title: z.string().min(1, "عنوان الزامی است."),
-  text: z.string().min(1, "متن پیام الزامی است."),
-  description: z.string(),
-});
+import { addSMSCategorySchema } from "../../validations/schemas/panelSms";
+
 const token = Cookies.get("token");
 
 export default function AddSMSCategory() {
@@ -24,7 +22,7 @@ export default function AddSMSCategory() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(addSMSCategorySchema),
   });
 
   const submitHandler = async (data) => {
@@ -41,8 +39,8 @@ export default function AddSMSCategory() {
 
       if (error.response && error.response.status === 401) {
         setSnackbarTitle(`شما درسترسی لازم به این قسمت را ندارید`);
-      }else{
-        setSnackbarTitle("خطا در برقراری ارتباط")
+      } else {
+        setSnackbarTitle("خطا در برقراری ارتباط");
       }
     }
   };
@@ -82,14 +80,12 @@ export default function AddSMSCategory() {
           label="توضیحات"
           {...register("description")}
         />
-        <Button
-          variant="contained"
-          type="submit"
-          className="w-full h-12 flex items-center justify-center bg-gray-500"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <ThreeDotsLoading /> : "ثبت"}
-        </Button>
+        {errors.description && (
+          <span className="text-red-400 block mb-2">
+            {errors.description.message}
+          </span>
+        )}
+        <SubmitBtn isSubmitting={isSubmitting}>ثبت</SubmitBtn>
       </form>
 
       <Snackbar

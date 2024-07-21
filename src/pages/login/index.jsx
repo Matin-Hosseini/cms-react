@@ -1,10 +1,7 @@
-"use client";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chess from "./../../assets/images/login/chess.jpg";
 import chess2 from "./../../assets/images/login/chess-vertical.jpg";
 import {
-  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -13,7 +10,6 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
-  Snackbar,
 } from "@mui/material";
 import { IoEye } from "react-icons/io5";
 import { IoMdEyeOff } from "react-icons/io";
@@ -21,14 +17,14 @@ import { IoMdEyeOff } from "react-icons/io";
 import { useState } from "react";
 import Logo from "./../../components/Logo";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import ThreeDotsLoading from "./../../components/ThreeDotLoading";
-import { IoMdClose } from "react-icons/io";
+
 import Cookies from "js-cookie";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/auth";
 import { loginSchema } from "../../validations/schemas/user";
 import Api from "../../axios/api";
+import { useSnackbar } from "../../contexts/snackbar";
+import SubmitBtn from "../../components/SubmitBtn";
 
 const loginFormControlStyles = {
   width: "100%",
@@ -41,12 +37,12 @@ const loginFormControlStyles = {
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarTitle, setSnackbarTitle] = useState("");
 
   const { getUserInfo } = useAuthContext();
 
   const navigate = useNavigate();
+
+  const { showSnackbar } = useSnackbar();
 
   const {
     register,
@@ -67,18 +63,16 @@ const Login = () => {
 
       getUserInfo(res.data.result);
 
-      setShowSnackbar(true);
-      setSnackbarTitle("خوش آمدید.");
+      showSnackbar("خوش آمدید.");
 
       setTimeout(() => {
         navigate("/");
       }, 2000);
     } catch (error) {
-      setShowSnackbar(true);
       if (error.response && error.response.status === 400) {
-        setSnackbarTitle("نام کاربری یا رمز عبور اشتباه است.");
+        showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.");
       } else {
-        setSnackbarTitle("خطا در برقراری ارتباط");
+        showSnackbar("خطا در برقراری ارتباط.");
       }
     }
   };
@@ -160,27 +154,8 @@ const Login = () => {
           />
         </FormGroup>
 
-        <Button
-          variant="contained"
-          type="submit"
-          className="w-full h-12 flex items-center justify-center bg-gray-500"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <ThreeDotsLoading /> : "ورود به پنل"}
-        </Button>
+        <SubmitBtn isSubmitting={isSubmitting}>ورود</SubmitBtn>
       </form>
-
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-        message={snackbarTitle}
-        action={
-          <IconButton color="inherit" onClick={() => setShowSnackbar(false)}>
-            <IoMdClose />
-          </IconButton>
-        }
-      />
     </div>
   );
 };

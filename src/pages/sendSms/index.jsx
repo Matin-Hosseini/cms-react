@@ -17,11 +17,10 @@ import { BiSad } from "react-icons/bi";
 import ThreeDotsLoading from "../../components/ThreeDotLoading";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { phoneRegex } from "../../utils/regexs";
+import { sendSMSSchema } from "../../validations/schemas/panelSms";
+import { useSnackbar } from "../../contexts/snackbar";
 
 export default function SendSms() {
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarTitle, setSnackbarTitle] = useState("");
   const [notAuthorized, setNotAuthorized] = useState(false);
   const [selectBoxValue, setSelectBoxValue] = useState("");
   const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
@@ -30,25 +29,19 @@ export default function SendSms() {
   const [messages, setMessages] = useState([]);
   const token = Cookies.get("token");
 
-  const schema = z.object({
-    phoneNumber: z
-      .string()
-      .min(1, "شماره موبایل الزامی است.")
-      .regex(phoneRegex, "شماره موبایل معتبر نمی باشد."),
-  });
-
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(sendSMSSchema),
   });
+
+  const { setShowSnackbar } = useSnackbar();
 
   const getSmsCategories = async () => {
     try {
       const res = await Api.post("/PanelSms/GetAllTextMessage", { token });
-      console.log(res);
 
       setMessages(res.data.result.messages);
     } catch (error) {
@@ -73,15 +66,12 @@ export default function SendSms() {
         phoneNumber: data.phoneNumber,
       });
 
-      setShowSnackbar(true);
-      setSnackbarTitle("پیام ارسال شد.");
+      setShowSnackbar("پیام ارسال شد.");
     } catch (error) {
-      setShowSnackbar(true);
-
       if (error.response && error.response.status === 401) {
-        setSnackbarTitle(`شما درسترسی لازم به این قسمت را ندارید`);
+        setShowSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
       } else {
-        setSnackbarTitle("خطا در برقراری ارتباط");
+        setShowSnackbar("خطا در برقراری ارتباط");
       }
     }
   };
@@ -150,21 +140,6 @@ export default function SendSms() {
               {isSubmitting ? <ThreeDotsLoading /> : "ارسال"}
             </Button>
           </form>
-
-          <Snackbar
-            open={showSnackbar}
-            autoHideDuration={3000}
-            onClose={() => setShowSnackbar(false)}
-            message={snackbarTitle}
-            action={
-              <IconButton
-                color="inherit"
-                onClick={() => setShowSnackbar(false)}
-              >
-                <IoMdClose />
-              </IconButton>
-            }
-          />
         </>
       )}
     </>
