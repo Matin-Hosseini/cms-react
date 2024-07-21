@@ -6,7 +6,7 @@ const ThreeDotsLoading = ({ color }) => {
       className="loader"
       style={{
         "--_g": `no-repeat radial-gradient(circle closest-side, ${
-          color && "#000"
+          color || "#000"
         } 90%, #0000)`,
       }}
     ></div>
