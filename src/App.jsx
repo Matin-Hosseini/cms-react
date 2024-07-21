@@ -21,6 +21,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Login from "./pages/login";
 import { useAuthContext } from "./contexts/auth";
 import favicon from "./assets/images/logo/favicon.webp";
+import GlobalLoading from "./components/GlobalLoading";
 console.log(favicon);
 
 function App() {
@@ -83,9 +84,7 @@ function App() {
                 <Header onSidebar={() => setIsSidebarOpen(true)} />
                 <main className="main">
                   <div className="content">
-                    <Suspense fallback={<h1>this is the loading</h1>}>
-                      {router}
-                    </Suspense>
+                    <Suspense fallback={<GlobalLoading />}>{router}</Suspense>
                   </div>
                 </main>
               </div>
