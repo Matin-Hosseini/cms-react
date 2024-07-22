@@ -32,6 +32,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <ul>
               <li>
                 <Link
+                  onClick={onClose}
                   to={"/"}
                   className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
                     pathname === "/" && "bg-blue-800 text-white"
@@ -43,6 +44,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               </li>
               <li>
                 <Link
+                  onClick={onClose}
                   to={"/add-sms-category"}
                   className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
                     pathname === "/add-sms-category" && "bg-blue-800 text-white"
@@ -54,6 +56,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               </li>
               <li>
                 <Link
+                  onClick={onClose}
                   to={"/send-sms"}
                   className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
                     pathname === "/send-sms" && "bg-blue-800 text-white"
@@ -63,26 +66,19 @@ const Sidebar = ({ isOpen, onClose }) => {
                   ارسال پیامک
                 </Link>
               </li>
-              {/* <li>
-                <NavLink />
-              </li> */}
-              {/* <li className="py-2 px-4">
+              <li>
                 <Link
-                  to={"/user"}
-                  // className={pathName === "/user" ? "bg-red-400" : ""}
+                  onClick={onClose}
+                  to={"/all-sent-messages"}
+                  className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
+                    pathname === "/all-sent-messages" &&
+                    "bg-blue-800 text-white"
+                  }`}
                 >
-                  آیتم 1
+                  <RiMailSendLine />
+                  پیام های ارسال شده
                 </Link>
               </li>
-              <li className="py-2 px-4">
-                <Link to={""}>آیتم 2</Link>
-              </li>
-              <li className="py-2 px-4">
-                <Link to={""}>آیتم 3</Link>
-              </li>
-              <li className="py-2 px-4">
-                <Link to={""}>آیتم 4</Link>
-              </li> */}
             </ul>
           </div>
 
