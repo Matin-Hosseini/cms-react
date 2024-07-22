@@ -1,4 +1,5 @@
 import {
+  Alert,
   Chip,
   FormControl,
   InputLabel,
@@ -17,6 +18,8 @@ import Cookies from "js-cookie";
 import { z } from "zod";
 import Api from "../../../axios/api";
 import { useSnackbar } from "../../../contexts/snackbar";
+import { CiViewList } from "react-icons/ci";
+import { TbFileSad } from "react-icons/tb";
 
 export default function SendToMany({ disabled, messages }) {
   const [number, setNumber] = useState("");
@@ -24,6 +27,9 @@ export default function SendToMany({ disabled, messages }) {
   const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
   const [selectBoxValue, setSelectBoxValue] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const token = Cookies.get("token");
 
   const { showSnackbar } = useSnackbar();
@@ -40,13 +46,22 @@ export default function SendToMany({ disabled, messages }) {
     handleSubmit,
     setValue,
     trigger,
-    formState: { errors, isSubmitting, isSubmitted },
-  } = useForm();
+    getValues,
+    formState: { errors },
+  } = useForm({ resolver: zodResolver(schema) });
 
-  const submitHandler = async (data) => {
+  const submitHandler = async () => {
+    setIsSubmitted(true);
+
+    if (!numbers.length) {
+      showSnackbar("لطفا ابتدا شماره های مدنظر را وارد کنید.");
+      return;
+    }
+    if (!selectedValue) return;
+    setIsSubmitting(true);
+
     const phoneNumbers = [];
     numbers.forEach((item) => phoneNumbers.push(item?.phoneNumber));
-    console.log(selectedValue);
     console.log(phoneNumbers);
 
     try {
@@ -68,6 +83,8 @@ export default function SendToMany({ disabled, messages }) {
         showSnackbar("خطا در برقراری ارتباط");
       }
     }
+
+    setIsSubmitting(false);
   };
 
   const handleDelete = (id) => {
@@ -88,11 +105,29 @@ export default function SendToMany({ disabled, messages }) {
     setValue("phoneNumber", "");
   };
 
+  const handleKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+
+      const phoneNumber = getValues("phoneNumber");
+
+      const { success } = schema.safeParse({ phoneNumber });
+      const isValid = await trigger("phoneNumber");
+
+      if (!isValid) return;
+
+      const newNumber = { id: crypto.randomUUID(), phoneNumber };
+
+      setNumbers((prev) => [...prev, newNumber]);
+      setValue("phoneNumber", "");
+    }
+  };
+
   return (
     <>
       <form
         action="#"
-        className="max-w-96 mx-auto mt-5"
+        className="max-w-96 mx-auto mt-5 mb-10"
         onSubmit={handleSubmit(submitHandler)}
       >
         <FormControl fullWidth className="mb-3">
@@ -123,6 +158,7 @@ export default function SendToMany({ disabled, messages }) {
           </span>
         )}
         <TextField
+          onKeyDown={handleKeyUp}
           disabled={disabled}
           fullWidth
           className="mb-3"
@@ -140,20 +176,28 @@ export default function SendToMany({ disabled, messages }) {
           </span>
         )}
         <SubmitBtn
-          className="bg-blue-600"
+          onClick={submitHandler}
+          className="bg-purple-600"
           isSubmitting={isSubmitting}
           disabled={disabled}
+          type="button"
         >
           ارسال
         </SubmitBtn>
       </form>
 
       <div>
-        <h2>شماره های درج شده:</h2>
+        <div className="flex items-center gap-2 text-blue-600">
+          <CiViewList className="text-2xl" />
+          <h2>شماره های درج شده:</h2>
+        </div>
 
-        <ul className="flex justify-center gap-3 flex-wrap">
+        <ul className="flex justify-center gap-3 flex-wrap my-10">
           {!numbers.length ? (
-            <div>هنوز شماره ای درج نکرده اید.</div>
+            <div className="flex items-center justify-center gap-2 text-red-600 border border-dashed border-red-600 max-w-[290px] w-full py-8">
+              <TbFileSad className="text-2xl" />
+              <h3>هنوز شماره ای درج نکرده اید</h3>
+            </div>
           ) : (
             numbers.map((number) => (
               <li key={number.id}>
@@ -167,14 +211,16 @@ export default function SendToMany({ disabled, messages }) {
         </ul>
       </div>
 
-      <p className="bg-yellow-100 text-yellow-600 mt-10">
-        کاربر گرامی برای افزودن هر شماره بعد از وارد کردن آن از / استفاده کنید
-        تا در لیست درج شده ها نمایش داده شود.
-      </p>
-      <p className="text-red-600 bg-red-100">
-        کاربر گرامی اعتبار سنجی ها در حال حاظر به طور کامل انجام نشده است لطفا
-        اطلاعات درست را وارد کنید.
-      </p>
+      <div className="mt-6 flex flex-col gap-3">
+        <Alert severity="success">
+          کاربر گرامی برای افزودن شماره مورد نظر بعد از وارد کردن شماره کافیست
+          Enter بزنید تا شماره وارد شده به لیست شماره های درج شده ها افزوده شود
+        </Alert>
+        <Alert severity="error">
+          دقت داشته باشید که تنها شماره هایی که در لیست شماره های درج شده قرار
+          داشته باشند ارسال خواهد شد.
+        </Alert>
+      </div>
     </>
   );
 }
