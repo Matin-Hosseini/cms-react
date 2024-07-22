@@ -35,6 +35,7 @@ const SendToSingle = ({ disabled, messages }) => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm({
     resolver: zodResolver(schema),
@@ -48,7 +49,6 @@ const SendToSingle = ({ disabled, messages }) => {
       text: selectedValue,
       phoneNumber: data.phoneNumber,
     };
-    console.log(obj);
 
     try {
       const res = await Api.post("/PanelSms/SendSmsToAnyOne", {
@@ -56,12 +56,11 @@ const SendToSingle = ({ disabled, messages }) => {
         text: selectedValue,
         phoneNumber: data.phoneNumber,
       });
-
-      console.log(res.data);
+      console.log(res);
 
       showSnackbar("پیام ارسال شد.");
+      setValue("phoneNumber", "");
     } catch (error) {
-      console.log(error);
       if (error.response && error.response.status === 401) {
         showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
       } else {
