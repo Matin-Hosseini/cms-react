@@ -26,7 +26,7 @@ const AllSentSMSs = () => {
       try {
         const res = await Api.post("/PanelSms/ShowAllPostedSmsLog", { token });
 
-        console.log(res.data);
+        console.log(res.data.result.postedSmsLogs);
         const newData = res.data.result.postedSmsLogs.map((row) => ({
           ...row,
           whenSent: gregorianToJalaali(row.whenSent),
