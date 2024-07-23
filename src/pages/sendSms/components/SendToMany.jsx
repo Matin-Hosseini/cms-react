@@ -125,6 +125,16 @@ export default function SendToMany({ disabled, messages }) {
 
   return (
     <>
+      <div className="my-6 flex flex-col gap-3">
+        <Alert severity="success">
+          کاربر گرامی برای افزودن شماره مورد نظر بعد از وارد کردن شماره کافیست
+          Enter بزنید تا شماره وارد شده به لیست شماره های درج شده ها افزوده شود
+        </Alert>
+        <Alert severity="error">
+          دقت داشته باشید که تنها شماره هایی که در لیست شماره های درج شده قرار
+          داشته باشند ارسال خواهد شد.
+        </Alert>
+      </div>
       <form
         action="#"
         className="max-w-96 mx-auto mt-5 mb-10"
@@ -209,17 +219,6 @@ export default function SendToMany({ disabled, messages }) {
             ))
           )}
         </ul>
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3">
-        <Alert severity="success">
-          کاربر گرامی برای افزودن شماره مورد نظر بعد از وارد کردن شماره کافیست
-          Enter بزنید تا شماره وارد شده به لیست شماره های درج شده ها افزوده شود
-        </Alert>
-        <Alert severity="error">
-          دقت داشته باشید که تنها شماره هایی که در لیست شماره های درج شده قرار
-          داشته باشند ارسال خواهد شد.
-        </Alert>
       </div>
     </>
   );
