@@ -16,10 +16,11 @@ export default function ProtectedRoute() {
   const currentToken = Cookies.get("token");
 
   useEffect(() => {
-    if (!currentToken || currentToken !== token) navigate("/login");
+    if (!currentToken) navigate("/login");
   }, [pathname]);
 
   if (isLoggedIn === false) {
+    console.log("navigate in protected route if condition");
     return navigate("/login", { replace: true });
   }
 
