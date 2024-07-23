@@ -6,17 +6,19 @@ import Api from "./../axios/api";
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userInfo, setUserInfo] = useState({});
+  const [token, setToken] = useState("");
 
-  const login = (userData) => {
+  const login = (userData, token) => {
     setUserInfo(userData);
+    setToken(token);
   };
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const token = Cookies.get("token");
+  const storedToken = Cookies.get("token");
 
   const getUserInfo = async (token) => {
     try {
@@ -26,8 +28,7 @@ const AuthProvider = ({ children }) => {
 
       setIsLoggedIn(true);
       setUserInfo(res.data.result);
-
-      if (pathname === "/login") navigate("/");
+      setToken(token);
     } catch (error) {
       console.log("error getting user info", error);
 
@@ -37,13 +38,15 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!token) return navigate("/login");
+    if (!storedToken) return navigate("/login");
 
-    getUserInfo(token);
+    getUserInfo(storedToken);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userInfo, login, getUserInfo }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, userInfo, login, getUserInfo, token, setToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
