@@ -5,7 +5,7 @@ const Login = lazy(() => import("./pages/login"));
 const AddSMSCategory = lazy(() => import("./pages/AddSMSCategory"));
 const SendSms = lazy(() => import("./pages/sendSms"));
 const AllSentSMSs = lazy(() => import("./pages/AllSentSMSs"));
-import ProtectedRoute from "./utils/ProtectedRoute";
+const ProtectedRoute = lazy(() => import("./utils/ProtectedRoute"));
 
 const routes = [
   { path: "/login", element: <Login /> },
