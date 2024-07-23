@@ -21,19 +21,6 @@ function App() {
 
   useEffect(() => {
     document.title = "پنل شطرنج";
-
-    let link = document.createElement("link");
-    link.rel = "icon";
-    const head = document.querySelector("head");
-    console.log(head);
-    head.insertAdjacentHTML(
-      "beforeend",
-      `
-        <link rel="icon" type="webp" href="http://localhost:5174${favicon}">
-      `
-    );
-
-    //  link.href = favicon;
   }, []);
 
   return (
