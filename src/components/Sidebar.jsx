@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Skeleton } from "@mui/material";
 import Logo from "./Logo";
 import { Link, useLocation } from "react-router-dom";
 // import { usePathname } from "next/navigation";
@@ -34,59 +34,19 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
 
             <ul>
-              {/* <li>
-                <Link
-                  onClick={onClose}
-                  to={"/"}
-                  className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
-                    pathname === "/" && "bg-blue-800 text-white"
-                  }`}
-                >
-                  <PiUsers />
-                  کاربران
-                </Link>
-              </li>
-              <li>
-                <Link
-                  onClick={onClose}
-                  to={"/add-sms-category"}
-                  className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
-                    pathname === "/add-sms-category" && "bg-blue-800 text-white"
-                  }`}
-                >
-                  <BiCommentAdd />
-                  افزودن دسته بندی پیامک
-                </Link>
-              </li>
-              <li>
-                <Link
-                  onClick={onClose}
-                  to={"/send-sms"}
-                  className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
-                    pathname === "/send-sms" && "bg-blue-800 text-white"
-                  }`}
-                >
-                  <RiMailSendLine />
-                  ارسال پیامک
-                </Link>
-              </li>
-              <li>
-                <Link
-                  onClick={onClose}
-                  to={"/all-sent-messages"}
-                  className={`flex items-center gap-2 rounded-md mb-2 py-2 px-4 ${
-                    pathname === "/all-sent-messages" &&
-                    "bg-blue-800 text-white"
-                  }`}
-                >
-                  <RiMailSendLine />
-                  پیام های ارسال شده
-                </Link>
-              </li> */}
-
-              {userPages?.map((page) => (
-                <SidebarLink key={page.id} {...page} />
-              ))}
+              {userPages.length === 0
+                ? Array.from(Array(10).keys()).map((item) => (
+                    <Skeleton
+                      key={item}
+                      variant="rectangular"
+                      sx={{ borderRadius: 1 }}
+                      width={"100%"}
+                      height={40}
+                    />
+                  ))
+                : userPages.map((page) => (
+                    <SidebarLink key={page.id} {...page} />
+                  ))}
             </ul>
           </div>
 
