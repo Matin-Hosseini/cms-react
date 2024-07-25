@@ -26,6 +26,8 @@ import Api from "../../axios/api";
 import { useSnackbar } from "../../contexts/snackbar";
 import SubmitBtn from "../../components/SubmitBtn";
 import { incomingPath } from "../../utils/ProtectedRoute";
+import createUserPages from "../../utils/createUserPages";
+import pages from "../../../data/pages";
 
 const loginFormControlStyles = {
   width: "100%",
@@ -63,12 +65,15 @@ const Login = () => {
       const token = res.data.result;
       Cookies.set("token", token, { expires: 1, path: "" });
 
-      getUserInfo(token);
+      const userInfo = await getUserInfo(token);
+
+      const userPages = createUserPages(userInfo.result.permissions, pages);
+
       setToken(token);
 
       showSnackbar("خوش آمدید.");
 
-      navigate(incomingPath || "/", { replace: true });
+      navigate(incomingPath || userPages[0].route, { replace: true });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.");

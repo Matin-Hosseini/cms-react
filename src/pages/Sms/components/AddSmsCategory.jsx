@@ -18,6 +18,7 @@ import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import SubmitBtn from "../../../components/SubmitBtn";
 import { TbCategoryPlus } from "react-icons/tb";
+import addSmsCategoryIcon from "./../../../assets/icons/sms/add-category.png";
 
 import { addSMSCategorySchema } from "../../../validations/schemas/panelSms";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -25,6 +26,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@emotion/react";
 
 import { IoClose } from "react-icons/io5";
+import CategoryBtnBox from "../../../components/CategoryBtnBox";
+import { TbArrowBackUp } from "react-icons/tb";
+import DialogHeader from "../../../components/DialogHeader";
 
 const token = Cookies.get("token");
 
@@ -40,7 +44,7 @@ export default function AddSMSCategory() {
   };
 
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarTitle, setSnackbarTitle] = useState("");
@@ -73,24 +77,19 @@ export default function AddSMSCategory() {
     }
   };
   return (
-    <>
-      <Button
-        variant="outlined"
+    <div>
+      <CategoryBtnBox
+        title="افزودن دسته بندی پیام"
+        iconSrc={addSmsCategoryIcon}
         onClick={handleClickOpen}
-        className="flex flex-col items-center justify-center gap-6 flex-1 text-3xl py-8"
-      >
-        <TbCategoryPlus className="text-6xl" />
-        افزودن دسته بندی پیام
-      </Button>
-      <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
-        <Box className="flex items-center justify-between">
-          <DialogTitle id="alert-dialog-title">
-            افزودن دسته بندی پیام
-          </DialogTitle>
-          <IconButton onClick={handleClose} className="ml-4">
-            <IoClose />
-          </IconButton>
-        </Box>
+        className="bg-orange-500"
+      />
+      <Dialog fullScreen={isBelowMd} open={open} onClose={handleClose}>
+        <DialogHeader
+          title={"افزودن دسته بندی پیام"}
+          onClose={handleClose}
+          belowMediaQuery={isBelowMd}
+        />
         <DialogContent>
           <Box className="w-full">
             <form
@@ -134,7 +133,9 @@ export default function AddSMSCategory() {
                   {errors.description.message}
                 </span>
               )}
-              <SubmitBtn isSubmitting={isSubmitting}>ثبت</SubmitBtn>
+              <SubmitBtn isSubmitting={isSubmitting} className="bg-orange-500">
+                ثبت
+              </SubmitBtn>
             </form>
             <Snackbar
               open={showSnackbar}
@@ -153,6 +154,6 @@ export default function AddSMSCategory() {
           </Box>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

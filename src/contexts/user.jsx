@@ -13,7 +13,7 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (user.isLoggedIn) {
-      console.log(user.userInfo);
+      
       const createdPages = createUserPages(user.userInfo.permissions, pages);
 
       setUserPages(createdPages);

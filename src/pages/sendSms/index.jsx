@@ -39,8 +39,11 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@emotion/react";
 import { IoClose } from "react-icons/io5";
 import { TbMessage2Plus } from "react-icons/tb";
+import sendSmsIcon from "./../../assets/icons/sms/send-sms.png";
 
 import PropTypes from "prop-types";
+import CategoryBtnBox from "../../components/CategoryBtnBox";
+import DialogHeader from "../../components/DialogHeader";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,7 +86,7 @@ export default function SendSms() {
   };
 
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [notAuthorized, setNotAuthorized] = useState(false);
 
@@ -97,16 +100,20 @@ export default function SendSms() {
 
   const token = Cookies.get("token");
 
+  const { showSnackbar } = useSnackbar();
+
   const getSmsCategories = async () => {
     try {
       const res = await Api.post("/PanelSms/GetAllTextMessage", { token });
+      console.log(res.data);
 
       setMessages(res.data.result.messages);
     } catch (error) {
+      console.log(error);
       if (error.response && error.response.status === 401) {
         setNotAuthorized(true);
       } else {
-        setSnackbarTitle("خطا در برقراری ارتباط");
+        showSnackbar("خطا در برقراری ارتباط");
       }
     }
   };
@@ -122,17 +129,22 @@ export default function SendSms() {
   };
 
   return (
-    <>
-      <Button
+    <div>
+      {/* <Button
         variant="outlined"
         onClick={handleClickOpen}
-        className="flex flex-col items-center justify-center gap-6 flex-1 text-3xl"
+        className="flex items-center justify-center gap-6 flex-1 text-2xl bg-blue-600 text-white"
       >
-        <TbMessage2Plus className="text-6xl" />
+        <img src={sendSmsIcon} alt="ارسال پیام جدید" className="w-[100px]" />
         ارسال پیام جدید
-      </Button>
+      </Button> */}
+      <CategoryBtnBox
+        title="ارسال پیام جدید"
+        iconSrc={sendSmsIcon}
+        onClick={handleClickOpen}
+      />
       <Dialog
-        fullScreen={fullScreen}
+        fullScreen={isBelowMd}
         open={open}
         onClose={handleClose}
         // sx={{
@@ -142,12 +154,12 @@ export default function SendSms() {
         //   },
         // }}
       >
-        <Box className="flex items-center justify-between">
-          <DialogTitle id="alert-dialog-title">ارسال پیام</DialogTitle>
-          <IconButton onClick={handleClose} className="ml-4">
-            <IoClose />
-          </IconButton>
-        </Box>
+        <DialogHeader
+          title={"ارسال پیام جدید"}
+          onClose={handleClose}
+          belowMediaQuery={isBelowMd}
+        />
+
         <DialogContent>
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -211,6 +223,6 @@ export default function SendSms() {
           )} */}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

@@ -29,6 +29,8 @@ const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setUserInfo(res.data.result);
       setToken(token);
+      
+      return res.data;
     } catch (error) {
       console.log("error getting user info", error);
 
