@@ -9,6 +9,10 @@
   font-family: "shabnam";
   src: url("./assets/font/shabnam/Shabnam-Medium-FD.ttf");
 }
+@font-face {
+  font-family: "Persian-titraj";
+  src: url("./assets/font/persian-titraj/persian-titraj2.ttf");
+}
 
 /* :root {
   --foreground-rgb: 0, 0, 0;
