@@ -11,17 +11,26 @@ import ScrollToTop from "./components/ScrollToTop";
 import Login from "./pages/login";
 import favicon from "./assets/images/logo/favicon.webp";
 import GlobalLoading from "./components/GlobalLoading";
+import "./../data";
+import { useAuthContext } from "./contexts/auth";
 
 function App() {
   const [isSidbarOpen, setIsSidebarOpen] = useState(false);
+  const user = useAuthContext();
 
   const router = useRoutes(routes);
+
+  const location = useLocation();
 
   const { pathname } = useLocation();
 
   useEffect(() => {
     document.title = "پنل شطرنج";
   }, []);
+
+  useEffect(() => {
+    if (isSidbarOpen) setIsSidebarOpen(false);
+  }, [location]);
 
   return (
     <>
