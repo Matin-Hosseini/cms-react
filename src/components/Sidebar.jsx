@@ -9,11 +9,15 @@ import NavLink from "./NavLink";
 import LogoutBtn from "./LogoutBtn";
 import { BiCommentAdd } from "react-icons/bi";
 import { RiMailSendLine } from "react-icons/ri";
+import { useUserContext } from "../contexts/user";
+import SidebarLink from "./SideBarLink";
 
 const menuItems = [];
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { pathname } = useLocation();
+
+  const { userPages } = useUserContext();
 
   return (
     <aside
@@ -30,7 +34,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
 
             <ul>
-              <li>
+              {/* <li>
                 <Link
                   onClick={onClose}
                   to={"/"}
@@ -78,7 +82,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <RiMailSendLine />
                   پیام های ارسال شده
                 </Link>
-              </li>
+              </li> */}
+
+              {userPages?.map((page) => (
+                <SidebarLink key={page.id} {...page} />
+              ))}
             </ul>
           </div>
 
