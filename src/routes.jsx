@@ -18,14 +18,6 @@ const routes = [
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/",
-        element: (
-          <DoesNotHaveAccess>
-            <Home />
-          </DoesNotHaveAccess>
-        ),
-      },
-      {
         path: "/customers",
         element: (
           <DoesNotHaveAccess>
@@ -81,7 +73,8 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      { path: "/*", element: <NotFound /> },
+      { path: "/", element: <Home /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ];
