@@ -1,5 +1,5 @@
 import AddSMSCategory from "./components/AddSmsCategory";
-import SendSms from "../sendSms";
+import SendSms from "./components/SendSms";
 import AllSentSMSs from "./components/AllSentMessages";
 import AllSmsCategories from "./components/AllSmsCategories";
 

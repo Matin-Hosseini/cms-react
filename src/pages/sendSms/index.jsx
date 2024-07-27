@@ -183,44 +183,7 @@ export default function SendSms() {
               <SendToMany messages={messages} />
             </CustomTabPanel>
           </Box>
-          {/* {notAuthorized ? (
-            <div className="border border-dashed border-red-400 text-red-400 h-24 flex items-center justify-center">
-              <BiSad className="text-[2rem] ml-3" />
-              <p>شما دسترسی لازم به این صفحه را ندارید.</p>
-            </div>
-          ) : (
-            <>
-              <div className="max-w-96 mx-auto mt-5">
-                <FormControl className="mb-5">
-                  <FormLabel id="demo-radio-buttons-group-label">
-                    نحوه ارسال
-                  </FormLabel>
-                  <RadioGroup
-                    defaultValue={how}
-                    name="how-to-send-radio-group"
-                    value={how}
-                    onChange={(e) => setHow(e.target.value)}
-                  >
-                    <FormControlLabel
-                      value="single"
-                      control={<Radio />}
-                      label="تکی"
-                    />
-                    <FormControlLabel
-                      value="multiple"
-                      control={<Radio />}
-                      label="چندتایی"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              {how === "single" ? (
-                <SendToSingle messages={messages} />
-              ) : (
-                <SendToMany messages={messages} />
-              )}
-            </>
-          )} */}
+          
         </DialogContent>
       </Dialog>
     </div>
