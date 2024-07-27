@@ -35,11 +35,11 @@ const Sidebar = ({ isOpen, onClose }) => {
 
             <ul>
               {userPages.length === 0
-                ? Array.from(Array(10).keys()).map((item) => (
+                ? Array.from(Array(6).keys()).map((item) => (
                     <Skeleton
                       key={item}
                       variant="rectangular"
-                      sx={{ borderRadius: 1 }}
+                      sx={{ borderRadius: 1, mb: 1 }}
                       width={"100%"}
                       height={40}
                     />
