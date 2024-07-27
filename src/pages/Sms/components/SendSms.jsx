@@ -77,13 +77,11 @@ export default function SendSms() {
   const getSmsCategories = async () => {
     try {
       const res = await Api.post("/PanelSms/GetAllTextMessage", { token });
-      console.log(res.data);
 
       setMessages(res.data.result.messages);
     } catch (error) {
-      console.log(error);
       if (error.response && error.response.status === 401) {
-        setNotAuthorized(true);
+        showSnackbar("شما دسترسی به این قسمت ندارد.");
       } else {
         showSnackbar("خطا در برقراری ارتباط");
       }
@@ -101,7 +99,16 @@ export default function SendSms() {
         iconSrc={sendSmsIcon}
         onClick={handleClickOpen}
       />
-      <Dialog fullScreen={isBelowMd} open={open} onClose={handleClose}>
+      <Dialog
+        fullScreen={isBelowMd}
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth={"md"}
+        sx={{
+          "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
+        }}
+      >
         <DialogHeader
           title={"ارسال پیام جدید"}
           onClose={handleClose}

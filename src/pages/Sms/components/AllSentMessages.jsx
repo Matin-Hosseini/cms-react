@@ -9,7 +9,7 @@ import { faIR } from "@mui/x-data-grid/locales";
 import gregorianToJalaali from "./../../../utils/funcs/gregorianToJalaali";
 import { useSnackbar } from "../../../contexts/snackbar";
 
-const AllSentSMSs = () => {
+const AllSentMessages = () => {
   const [allMessages, setAllMessages] = useState([]);
   const token = Cookies.get("token");
 
@@ -26,7 +26,6 @@ const AllSentSMSs = () => {
       try {
         const res = await Api.post("/PanelSms/ShowAllPostedSmsLog", { token });
 
-        console.log(res.data.result.postedSmsLogs);
         const newData = res.data.result.postedSmsLogs.map((row) => ({
           ...row,
           whenSent: gregorianToJalaali(row.whenSent),
@@ -45,7 +44,6 @@ const AllSentSMSs = () => {
   }, []);
   return (
     <>
-      
       <h2 className="mb-4">پیام های ارسال شده</h2>
       <div style={{ height: 600, width: "100%" }}>
         <DataGrid
@@ -91,4 +89,4 @@ const AllSentSMSs = () => {
   );
 };
 
-export default AllSentSMSs;
+export default AllSentMessages;

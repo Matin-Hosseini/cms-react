@@ -22,6 +22,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 
+import { LuTrash } from "react-icons/lu";
+
 function createData(id, name, calories, fat, carbs, protein) {
   return {
     id,
@@ -83,34 +85,22 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
+    id: "title",
     numeric: false,
     disablePadding: true,
-    label: "Dessert (100g serving)",
+    label: "عنوان",
   },
   {
-    id: "calories",
-    numeric: true,
+    id: "text",
+    numeric: false,
     disablePadding: false,
-    label: "Calories",
+    label: "متن پیام",
   },
   {
     id: "fat",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
-    label: "Fat (g)",
-  },
-  {
-    id: "carbs",
-    numeric: true,
-    disablePadding: false,
-    label: "Carbs (g)",
-  },
-  {
-    id: "protein",
-    numeric: true,
-    disablePadding: false,
-    label: "Protein (g)",
+    label: "توضیحات",
   },
 ];
 
@@ -200,7 +190,7 @@ function EnhancedTableToolbar(props) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} ردیف انتخاب شد.
         </Typography>
       ) : (
         <Typography
@@ -209,14 +199,14 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          جدول دسته بندی پیامک ها
         </Typography>
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Tooltip title="حذف">
           <IconButton>
-            <DeleteIcon />
+            <LuTrash className="text-red-400" />
           </IconButton>
         </Tooltip>
       ) : (
@@ -239,7 +229,7 @@ export default function CategoriesTable() {
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -386,7 +376,7 @@ export default function CategoriesTable() {
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
+        label="سایز کوچک"
       />
     </Box>
   );

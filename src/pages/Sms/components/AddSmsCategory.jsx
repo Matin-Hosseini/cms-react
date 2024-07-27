@@ -44,7 +44,7 @@ export default function AddSMSCategory() {
   };
 
   const theme = useTheme();
-  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarTitle, setSnackbarTitle] = useState("");
@@ -84,7 +84,16 @@ export default function AddSMSCategory() {
         onClick={handleClickOpen}
         className="bg-orange-500"
       />
-      <Dialog fullScreen={isBelowMd} open={open} onClose={handleClose}>
+      <Dialog
+        fullScreen={isBelowMd}
+        open={open}
+        onClose={handleClose}
+        fullWidth
+        maxWidth={"md"}
+        sx={{
+          "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
+        }}
+      >
         <DialogHeader
           title={"افزودن دسته بندی پیام"}
           onClose={handleClose}
@@ -95,7 +104,7 @@ export default function AddSMSCategory() {
             <form
               action="#"
               onSubmit={handleSubmit(submitHandler)}
-              className=" mx-auto mt-5"
+              className="max-w-96 mx-auto mt-5"
             >
               <TextField
                 fullWidth

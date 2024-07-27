@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import allPermissions from "../../data/allPermissions";
 import pages from "../../data/pages";
 import createUserPages from "../utils/createUserPages";
 import { useAuthContext } from "./auth";
@@ -13,7 +12,6 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (user.isLoggedIn) {
-      
       const createdPages = createUserPages(user.userInfo.permissions, pages);
 
       setUserPages(createdPages);

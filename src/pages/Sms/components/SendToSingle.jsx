@@ -56,7 +56,6 @@ const SendToSingle = ({ disabled, messages }) => {
         text: selectedValue,
         phoneNumber: data.phoneNumber,
       });
-      console.log(res);
 
       showSnackbar("پیام ارسال شد.");
       setValue("phoneNumber", "");
