@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Logo = () => {
   return (
-    <Link to={"/"}>
+    <Link to={"https://iroriginal.com/"}>
       <img src={logo} alt="ایران اورجینال" width={"110px"} />
     </Link>
   );
