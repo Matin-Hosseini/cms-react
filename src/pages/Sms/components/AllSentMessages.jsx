@@ -3,11 +3,10 @@ import Cookies from "js-cookie";
 import Api from "../../../axios/api";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 // import DeleteDialog from "../../components/DeleteDialog";
-import { IconButton, Snackbar } from "@mui/material";
-import { IoMdClose } from "react-icons/io";
 import { faIR } from "@mui/x-data-grid/locales";
 import gregorianToJalaali from "./../../../utils/funcs/gregorianToJalaali";
 import { useSnackbar } from "../../../contexts/snackbar";
+import { descending } from "../../../utils/funcs/sort";
 
 const AllSentMessages = () => {
   const [allMessages, setAllMessages] = useState([]);
@@ -30,7 +29,8 @@ const AllSentMessages = () => {
           ...row,
           whenSent: gregorianToJalaali(row.whenSent),
         }));
-        setAllMessages(newData);
+
+        setAllMessages(descending(newData, "id"));
       } catch (error) {
         if (error.response && error.response.status === 401) {
           showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
@@ -42,6 +42,7 @@ const AllSentMessages = () => {
 
     getAllMessages();
   }, []);
+
   return (
     <>
       <h2 className="mb-4">پیام های ارسال شده</h2>
