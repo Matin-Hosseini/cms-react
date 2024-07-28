@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Api from "../../axios/api";
 import Cookies from "js-cookie";
 import AddUser from "./components/AddUser";
+import UserInformation from "./components/UserInformation";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -32,6 +33,7 @@ const Users = () => {
     <div>
       <div className="grid sm:grid-cols-2 gap-3 mb-4">
         <AddUser />
+        <UserInformation />
       </div>
 
       <DataTable columns={columns} rows={users} custom_ID={"userID"} />
