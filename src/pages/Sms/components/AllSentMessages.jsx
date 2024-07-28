@@ -30,7 +30,7 @@ const AllSentMessages = () => {
           whenSent: gregorianToJalaali(row.whenSent),
         }));
 
-        setAllMessages(descending(newData, "id"));
+        setAllMessages(newData);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
