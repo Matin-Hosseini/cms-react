@@ -21,13 +21,19 @@ import DeleteDialog from "./DeleteDialog";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { IoMdClose } from "react-icons/io";
+import DialogHeader from "./DialogHeader";
+import Api from "../axios/api";
+import { useSnackbar } from "../contexts/snackbar";
 
 export default function Table({ customers }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteDialogRow, setDeleteDialogRow] = useState({});
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  // const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [detailsDialog, setDetailsDialog] = useState(false);
+
+  const { showSnackbar } = useSnackbar();
 
   const sendSMS = async (params) => {
     const userPhone = params.row.phoneNumber;
@@ -50,9 +56,21 @@ export default function Table({ customers }) {
     } catch (error) {
       console.log(error);
       if (error.response.status === 401) {
-        setSnackbarMessage("شما دسترسی لازم به این قسمت را ندارید.");
-        setShowSnackbar(true);
+        showSnackbar("شما دسترسی لازم به این قسمت را ندارید.");
       }
+    }
+  };
+
+  const showCustomerInfo = async (row) => {
+    setDetailsDialog(true);
+    console.log(row);
+
+    try {
+      const res = await Api.post("");
+
+      console.log(res.data);
+    } catch (error) {
+      showSnackbar("خطا در دریافت اطلاعات.");
     }
   };
 
@@ -67,6 +85,33 @@ export default function Table({ customers }) {
       editable: true,
     },
     { field: "nationalCode", headerName: "کد ملی", type: "string", width: 120 },
+    {
+      field: "actions",
+      headerName: "",
+      width: 140,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <div className="flex items-center h-full">
+            {/* <IconButton
+              onClick={() => {
+                setShowDeleteModal(true);
+                setDeleteDialogRow(params.row);
+              }}
+            >
+              <FaRegTrashAlt className="text-red-500 text-lg" />
+            </IconButton> */}
+
+            {/* <IconButton onClick={() => sendSMS(params)}>
+              <BiMessageSquareAdd className="text-green-500 text-lg" />
+            </IconButton> */}
+            <Button onClick={() => showCustomerInfo(params.row)}>
+              مشاهده جزئیات
+            </Button>
+          </div>
+        );
+      },
+    },
     // {
     //   field: "actions",
     //   headerName: "",
@@ -148,17 +193,10 @@ export default function Table({ customers }) {
           onDelete={deleteCustomer}
         />
       </div>
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setShowSnackbar(false)}
-        message={snackbarMessage}
-        action={
-          <IconButton color="inherit" onClick={() => setShowSnackbar(false)}>
-            <IoMdClose />
-          </IconButton>
-        }
-      />
+
+      <Dialog open={detailsDialog} onClose={() => setDetailsDialog(false)}>
+        <DialogContent>content</DialogContent>
+      </Dialog>
     </>
   );
 }
