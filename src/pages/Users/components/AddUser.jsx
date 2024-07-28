@@ -1,6 +1,6 @@
 import { Box, Dialog, DialogContent, TextField } from "@mui/material";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
-import addUserIcon from "./../../../assets/images/icons/add-user.jpg";
+import addUserIcon from "./../../../assets/images/icons/add-user.png";
 import DialogHeader from "../../../components/DialogHeader";
 import { useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -65,7 +65,7 @@ const AddUser = () => {
         title="افزودن کاربر جدید"
         iconSrc={addUserIcon}
         onClick={handleClickOpen}
-        className="bg-green-700"
+        className="bg-neutral-400"
       />
       <Dialog
         fullScreen={isBelowMd}
