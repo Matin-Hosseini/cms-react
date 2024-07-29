@@ -1,32 +1,52 @@
-import { IconButton, Snackbar } from "@mui/material";
-import { createContext, useContext, useState } from "react";
+import { Alert, IconButton, Snackbar } from "@mui/material";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { IoMdClose } from "react-icons/io";
 
 export const SnackbarContext = createContext(null);
 
 const SnackbarProvider = ({ children }) => {
-  const [open, setOpen] = useState(false);
-  const [snackbarTitle, setSnackbarTitle] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
 
-  const showSnackbar = (title) => {
-    setOpen(true);
-    setSnackbarTitle(title);
-  };
+  const showSnackbar = useCallback((message, severity = "info") => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  }, []);
+
+  const hideSnackbar = useCallback(() => {
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  }, []);
+
+  const value = useMemo(
+    () => ({ showSnackbar, hideSnackbar }),
+    [showSnackbar, hideSnackbar]
+  );
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <SnackbarContext.Provider value={value}>
       {children}
       <Snackbar
-        open={open}
+        open={snackbar.open}
         autoHideDuration={3000}
-        onClose={() => setOpen(false)}
-        message={snackbarTitle}
-        action={
-          <IconButton color="inherit" onClick={() => setOpen(false)}>
-            <IoMdClose />
-          </IconButton>
-        }
-      />
+        onClose={hideSnackbar}
+        // anchorOrigin={}
+      >
+        <Alert onClose={hideSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </SnackbarContext.Provider>
   );
 };
