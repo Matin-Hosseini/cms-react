@@ -20,6 +20,7 @@ import Api from "../../../axios/api";
 import { useSnackbar } from "../../../contexts/snackbar";
 import { CiViewList } from "react-icons/ci";
 import { TbFileSad } from "react-icons/tb";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SendToMany({ disabled, messages }) {
   const [number, setNumber] = useState("");
@@ -33,6 +34,8 @@ export default function SendToMany({ disabled, messages }) {
   const token = Cookies.get("token");
 
   const { showSnackbar } = useSnackbar();
+
+  const queryClient = useQueryClient();
 
   const schema = z.object({
     phoneNumber: z
@@ -73,6 +76,7 @@ export default function SendToMany({ disabled, messages }) {
       console.log(res.data);
 
       showSnackbar("پیام ارسال شد.");
+      queryClient.invalidateQueries(["sent-messages"]);
 
       setNumbers([]);
     } catch (error) {
