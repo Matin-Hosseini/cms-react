@@ -1,4 +1,4 @@
-import { Alert, Box, Dialog, DialogContent } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogContent } from "@mui/material";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import { useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -12,6 +12,8 @@ import DataTable from "../../../components/DataTable";
 
 import { columns } from "../../../../data/tables/allSmsCategories";
 import { useSnackbar } from "../../../contexts/snackbar";
+import { useQuery } from "@tanstack/react-query";
+import { getSmsCategories } from "../../../services/requests/sms";
 
 const AllSmsCategories = () => {
   const [open, setOpen] = useState(false);
@@ -28,27 +30,20 @@ const AllSmsCategories = () => {
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { showSnackbar } = useSnackbar();
-
   const token = Cookies.get("token");
 
-  useEffect(() => {
-    const getAllMessageCategories = async () => {
-      try {
-        const res = await Api.post("/PanelSms/GetAllTextMessage", { token });
+  const { data, isPending, error, isFetching, isError } = useQuery({
+    queryKey: ["sms-categories"],
+    queryFn: async () => await getSmsCategories(token),
+    retry: 0,
+  });
 
-        setRows(res.data.result.messages);
-      } catch (error) {
-        // if (error.response && error.response.status === 401) {
-        //   showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
-        // } else {
-        showSnackbar("خطا در برقراری ارتباط");
-        // }
-      }
-    };
-
-    getAllMessageCategories();
-  }, []);
+  if (isFetching) {
+    console.log("is fetching");
+  }
+  if (isPending) {
+    console.log("is pending");
+  }
 
   return (
     <div>
