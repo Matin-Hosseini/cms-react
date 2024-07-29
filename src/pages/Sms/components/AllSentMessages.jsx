@@ -6,7 +6,8 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { faIR } from "@mui/x-data-grid/locales";
 import gregorianToJalaali from "./../../../utils/funcs/gregorianToJalaali";
 import { useSnackbar } from "../../../contexts/snackbar";
-import { descending } from "../../../utils/funcs/sort";
+import { useQuery } from "@tanstack/react-query";
+import { sentMessages } from "../../../services/requests/sms";
 
 const AllSentMessages = () => {
   const [allMessages, setAllMessages] = useState([]);
@@ -20,28 +21,19 @@ const AllSentMessages = () => {
     { field: "text", headerName: "متن پیام", width: 300 },
   ];
 
-  useEffect(() => {
-    const getAllMessages = async () => {
-      try {
-        const res = await Api.post("/PanelSms/ShowAllPostedSmsLog", { token });
+  const { data, isFetching, isError, isPending, error, isLoading } = useQuery({
+    queryKey: ["sent-messages"],
+    queryFn: () => sentMessages(token),
+  });
 
-        const newData = res.data.result.postedSmsLogs.map((row) => ({
-          ...row,
-          whenSent: gregorianToJalaali(row.whenSent),
-        }));
+  const messages = data?.result.postedSmsLogs.map((row) => ({
+    ...row,
+    whenSent: gregorianToJalaali(row.whenSent),
+  }));
 
-        setAllMessages(newData);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
-        } else {
-          showSnackbar("خطا در برقراری ارتباط");
-        }
-      }
-    };
-
-    getAllMessages();
-  }, []);
+  if (isFetching) {
+    console.log("sent messeges is fetching");
+  }
 
   return (
     <>
@@ -49,7 +41,7 @@ const AllSentMessages = () => {
       <div style={{ height: 600, width: "100%" }}>
         <DataGrid
           sx={{ "& .MuiDataGrid-cell:focus": { outline: "none" } }}
-          rows={allMessages}
+          rows={messages || []}
           columns={columns}
           slots={{
             toolbar: GridToolbar,
