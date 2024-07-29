@@ -15,6 +15,7 @@ import { phoneRegex } from "../../../utils/regexs";
 import { useSnackbar } from "../../../contexts/snackbar";
 import Cookies from "js-cookie";
 import Api from "../../../axios/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SendToSingle = ({ disabled, messages }) => {
   const [selectedValue, setSelectedValue] = useState("");
@@ -40,6 +41,7 @@ const SendToSingle = ({ disabled, messages }) => {
   } = useForm({
     resolver: zodResolver(schema),
   });
+  const queryClient = useQueryClient();
 
   const submitHandler = async (data) => {
     if (!selectedValue) return;
@@ -56,6 +58,8 @@ const SendToSingle = ({ disabled, messages }) => {
         text: selectedValue,
         phoneNumber: data.phoneNumber,
       });
+
+      queryClient.invalidateQueries(["sent-messages"]);
 
       showSnackbar("پیام ارسال شد.");
       setValue("phoneNumber", "");
