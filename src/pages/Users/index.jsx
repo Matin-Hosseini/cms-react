@@ -5,29 +5,18 @@ import Api from "../../axios/api";
 import Cookies from "js-cookie";
 import AddUser from "./components/AddUser";
 import UserInformation from "./components/UserInformation";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUsers } from "../../services/requests/users";
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const token = Cookies.get("token");
-    const getUsers = async () => {
-      try {
-        const res = await Api.post("/User/GetAllUsers", {
-          token,
-          userName: "",
-        });
-
-        console.log(res.data);
-
-        setUsers(res.data.result.users);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getUsers();
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () =>
+      await getAllUsers({
+        token: Cookies.get("token"),
+        userName: "",
+      }),
+  });
 
   return (
     <div>
@@ -36,7 +25,11 @@ const Users = () => {
         <UserInformation />
       </div>
 
-      <DataTable columns={columns} rows={users} custom_ID={"userID"} />
+      <DataTable
+        columns={columns}
+        rows={data?.result.users || []}
+        custom_ID={"userID"}
+      />
     </div>
   );
 };
