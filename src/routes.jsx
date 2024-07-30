@@ -1,6 +1,6 @@
 import { lazy } from "react";
 
-const Customers = lazy(() => import("./pages/customers"));
+const Customers = lazy(() => import("./pages/Customers"));
 const Login = lazy(() => import("./pages/login"));
 
 const ProtectedRoute = lazy(() => import("./utils/ProtectedRoute"));

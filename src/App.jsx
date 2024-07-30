@@ -13,6 +13,7 @@ import favicon from "./assets/images/logo/favicon.webp";
 import GlobalLoading from "./components/GlobalLoading";
 import "./../data";
 import { useAuthContext } from "./contexts/auth";
+import Test from "./components/Test";
 
 function App() {
   const [isSidbarOpen, setIsSidebarOpen] = useState(false);
@@ -54,6 +55,7 @@ function App() {
           </div>
         </div>
       )}
+      
     </>
   );
 }
