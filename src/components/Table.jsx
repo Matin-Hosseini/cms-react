@@ -85,33 +85,33 @@ export default function Table({ customers }) {
       editable: true,
     },
     { field: "nationalCode", headerName: "کد ملی", type: "string", width: 120 },
-    {
-      field: "actions",
-      headerName: "",
-      width: 140,
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <div className="flex items-center h-full">
-            {/* <IconButton
-              onClick={() => {
-                setShowDeleteModal(true);
-                setDeleteDialogRow(params.row);
-              }}
-            >
-              <FaRegTrashAlt className="text-red-500 text-lg" />
-            </IconButton> */}
+    // {
+    //   field: "actions",
+    //   headerName: "",
+    //   width: 140,
+    //   sortable: false,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div className="flex items-center h-full">
+    //         {/* <IconButton
+    //           onClick={() => {
+    //             setShowDeleteModal(true);
+    //             setDeleteDialogRow(params.row);
+    //           }}
+    //         >
+    //           <FaRegTrashAlt className="text-red-500 text-lg" />
+    //         </IconButton> */}
 
-            {/* <IconButton onClick={() => sendSMS(params)}>
-              <BiMessageSquareAdd className="text-green-500 text-lg" />
-            </IconButton> */}
-            <Button onClick={() => showCustomerInfo(params.row)}>
-              مشاهده جزئیات
-            </Button>
-          </div>
-        );
-      },
-    },
+    //         {/* <IconButton onClick={() => sendSMS(params)}>
+    //           <BiMessageSquareAdd className="text-green-500 text-lg" />
+    //         </IconButton> */}
+    //         <Button onClick={() => showCustomerInfo(params.row)}>
+    //           مشاهده جزئیات
+    //         </Button>
+    //       </div>
+    //     );
+    //   },
+    // },
     // {
     //   field: "actions",
     //   headerName: "",
