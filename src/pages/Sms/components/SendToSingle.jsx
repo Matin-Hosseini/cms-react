@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { sendSMSSchema } from "../../../validations/schemas/panelSms";
+import {
+  sendSMSSchema,
+  sendSmsToAnyoneSchema,
+} from "../../../validations/schemas/panelSms";
 import {
   FormControl,
   InputLabel,
@@ -15,23 +18,18 @@ import { phoneRegex } from "../../../utils/regexs";
 import { useSnackbar } from "../../../contexts/snackbar";
 import Cookies from "js-cookie";
 import Api from "../../../axios/api";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { sendSmsToAnyone } from "../../../services/requests/sms";
 
 const SendToSingle = ({ disabled, messages }) => {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
   const [selectBoxValue, setSelectBoxValue] = useState("");
 
-  const token = Cookies.get("token");
-
   const { showSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
-  const schema = z.object({
-    phoneNumber: z
-      .string()
-      .min(1, "لطفا شماره موبایل را وارد کنید.")
-      .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
-  });
+  const token = Cookies.get("token");
 
   const {
     register,
@@ -39,37 +37,32 @@ const SendToSingle = ({ disabled, messages }) => {
     setValue,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(sendSmsToAnyoneSchema),
   });
-  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (data) => await sendSmsToAnyone(data),
+    onSuccess: async () => {
+      showSnackbar("پیام ارسال شد.");
+      queryClient.invalidateQueries("sent-messages");
+      setValue("phoneNumber", "");
+    },
+    onError: () => {
+      console.log("onError");
+      showSnackbar("خطا در ارسال اطلاعات", "error");
+    },
+  });
 
   const submitHandler = async (data) => {
     if (!selectedValue) return;
 
-    const obj = {
+    const requestData = {
       token,
       text: selectedValue,
       phoneNumber: data.phoneNumber,
     };
 
-    try {
-      const res = await Api.post("/PanelSms/SendSmsToAnyOne", {
-        token,
-        text: selectedValue,
-        phoneNumber: data.phoneNumber,
-      });
-
-      queryClient.invalidateQueries(["sent-messages"]);
-
-      showSnackbar("پیام ارسال شد.");
-      setValue("phoneNumber", "");
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
-      } else {
-        showSnackbar("خطا در برقراری ارتباط");
-      }
-    }
+    mutation.mutate(requestData);
   };
   return (
     <form
@@ -110,15 +103,11 @@ const SendToSingle = ({ disabled, messages }) => {
         id="phone"
         label="شماره موبایل"
         {...register("phoneNumber")}
-        disabled={disabled}
+        error={!!errors.phoneNumber}
+        helperText={errors.phoneNumber?.message}
       />
-      {errors.phoneNumber && (
-        <span className="text-red-400 block mb-2 text-xs">
-          {errors.phoneNumber.message}
-        </span>
-      )}
 
-      <SubmitBtn isSubmitting={isSubmitting} disabled={disabled}>
+      <SubmitBtn isSubmitting={mutation.isPending} disabled={disabled}>
         ارسال
       </SubmitBtn>
     </form>
