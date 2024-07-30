@@ -12,47 +12,40 @@ import { z } from "zod";
 import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import UserInfoCard from "./UserInfoCard";
+import { useMutation } from "@tanstack/react-query";
+import { getUserInformation } from "../../../services/requests/users";
+import { useSnackbar } from "../../../contexts/snackbar";
+import { getUserInformationSchema } from "../../../validations/schemas/user";
 
 const UserInformation = () => {
-  const [userInfo, setUserInfo] = useState(null);
-
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { showSnackbar } = useSnackbar();
 
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const schema = z.object({
-    userName: z.string().min(1, "نام کاربری الزامی است."),
-  });
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(getUserInformationSchema),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (data) => await getUserInformation(data),
+    onSuccess: (data) => {
+      if (data.status === 404) {
+        showSnackbar("کاربری یافت نشد.", "error");
+      }
+    },
   });
 
   const submitHandler = async ({ userName }) => {
     const token = Cookies.get("token");
-    try {
-      const res = await Api.post("/User/GetUserInformation", {
-        token,
-        userName,
-      });
-      console.log(res);
-      setUserInfo(res.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+
+    mutation.mutate({ token, userName });
   };
 
   return (
@@ -60,13 +53,13 @@ const UserInformation = () => {
       <CategoryBtnBox
         title="اطلاعات کاربر"
         iconSrc={userInformationIcon}
-        onClick={handleClickOpen}
+        onClick={() => setOpen(true)}
         className="bg-zinc-400"
       />
       <Dialog
         fullScreen={isBelowMd}
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         fullWidth
         maxWidth={"md"}
         sx={{
@@ -75,7 +68,7 @@ const UserInformation = () => {
       >
         <DialogHeader
           title={"دریافت اطلاعات کاربر"}
-          onClose={handleClose}
+          onClose={() => setOpen(false)}
           belowMediaQuery={isBelowMd}
         />
         <DialogContent>
@@ -98,7 +91,9 @@ const UserInformation = () => {
               <SubmitBtn isSubmitting={isSubmitting}>مشاهده</SubmitBtn>
             </form>
 
-            {userInfo && <UserInfoCard {...userInfo} />}
+            {mutation.data?.status === 200 && (
+              <UserInfoCard {...mutation.data.result} />
+            )}
           </Box>
         </DialogContent>
       </Dialog>

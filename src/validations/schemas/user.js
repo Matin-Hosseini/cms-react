@@ -5,3 +5,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, "رمز عبور الزامی است."),
   remember_me: z.boolean(),
 });
+
+export const getUserInformationSchema = z.object({
+  userName: z.string().min(1, "نام کاربری الزامی است."),
+});
