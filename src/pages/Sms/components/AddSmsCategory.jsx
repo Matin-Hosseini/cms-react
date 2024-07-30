@@ -1,23 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Box, Dialog, DialogContent, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import ThreeDotsLoading from "../../../components/ThreeDotLoading";
 import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { IoMdClose } from "react-icons/io";
 import SubmitBtn from "../../../components/SubmitBtn";
-import { TbCategoryPlus } from "react-icons/tb";
 import addSmsCategoryIcon from "./../../../assets/icons/sms/add-category.png";
 
 import { addSMSCategorySchema } from "../../../validations/schemas/panelSms";
@@ -25,69 +12,60 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useTheme } from "@emotion/react";
 
-import { IoClose } from "react-icons/io5";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
-import { TbArrowBackUp } from "react-icons/tb";
 import DialogHeader from "../../../components/DialogHeader";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addSmsCategory } from "../../../services/requests/sms";
+import { useSnackbar } from "../../../contexts/snackbar";
 
 const token = Cookies.get("token");
 
 export default function AddSMSCategory() {
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarTitle, setSnackbarTitle] = useState("");
+  const { showSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(addSMSCategorySchema),
   });
 
+  const mutation = useMutation({
+    mutationFn: async (data) => await addSmsCategory(data),
+    onSuccess: (_, variables) => {
+      showSnackbar(`دسته بندی ${variables.title} افزوده شد.`);
+      queryClient.invalidateQueries(["sms-categories"]);
+      reset();
+    },
+    onError: () => {
+      showSnackbar("خطا در ارسال اطلاعات.", "error");
+    },
+  });
+
   const submitHandler = async (data) => {
-    try {
-      const res = await Api.post("/PanelSms/AddNewTextMessage", {
-        token,
-        ...data,
-      });
-
-      setShowSnackbar(true);
-      setSnackbarTitle(`دسته بندی ${data.title} افزوده شد.`);
-    } catch (error) {
-      setShowSnackbar(true);
-
-      if (error.response && error.response.status === 401) {
-        setSnackbarTitle(`شما درسترسی لازم به این قسمت را ندارید`);
-      } else {
-        setSnackbarTitle("خطا در برقراری ارتباط");
-      }
-    }
+    mutation.mutate({ token, ...data });
   };
+
   return (
     <div>
       <CategoryBtnBox
         title="افزودن دسته بندی پیام"
         iconSrc={addSmsCategoryIcon}
-        onClick={handleClickOpen}
+        onClick={() => setOpen(true)}
         className="bg-orange-500"
       />
       <Dialog
         fullScreen={isBelowMd}
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         fullWidth
         maxWidth={"md"}
         sx={{
@@ -96,7 +74,7 @@ export default function AddSMSCategory() {
       >
         <DialogHeader
           title={"افزودن دسته بندی پیام"}
-          onClose={handleClose}
+          onClose={() => setOpen(false)}
           belowMediaQuery={isBelowMd}
         />
         <DialogContent>
@@ -112,54 +90,37 @@ export default function AddSMSCategory() {
                 id="title"
                 label="عنوان"
                 {...register("title")}
+                error={!!errors.title}
+                helperText={errors.title?.message}
               />
-              {errors.title && (
-                <span className="text-red-400 block mb-2">
-                  {errors.title.message}
-                </span>
-              )}
+
               <TextField
                 fullWidth
                 className="mb-3"
                 id="text"
                 label="متن پیام"
                 {...register("text")}
+                error={!!errors.text}
+                helperText={errors.text?.message}
               />
-              {errors.text && (
-                <span className="text-red-400 block mb-2">
-                  {errors.text.message}
-                </span>
-              )}
+
               <TextField
                 fullWidth
                 className="mb-3"
                 id="description"
                 label="توضیحات"
                 {...register("description")}
+                error={!!errors.description}
+                helperText={errors.description?.message}
               />
-              {errors.description && (
-                <span className="text-red-400 block mb-2">
-                  {errors.description.message}
-                </span>
-              )}
-              <SubmitBtn isSubmitting={isSubmitting} className="bg-orange-500">
+
+              <SubmitBtn
+                isSubmitting={mutation.isPending}
+                className="bg-orange-500"
+              >
                 ثبت
               </SubmitBtn>
             </form>
-            <Snackbar
-              open={showSnackbar}
-              autoHideDuration={3000}
-              onClose={() => setShowSnackbar(false)}
-              message={snackbarTitle}
-              action={
-                <IconButton
-                  color="inherit"
-                  onClick={() => setShowSnackbar(false)}
-                >
-                  <IoMdClose />
-                </IconButton>
-              }
-            />
           </Box>
         </DialogContent>
       </Dialog>

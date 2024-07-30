@@ -17,46 +17,29 @@ import { getSmsCategories } from "../../../services/requests/sms";
 
 const AllSmsCategories = () => {
   const [open, setOpen] = useState(false);
-  const [rows, setRows] = useState([]);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
   const token = Cookies.get("token");
 
-  const { data, isPending, error, isFetching, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ["sms-categories"],
     queryFn: async () => await getSmsCategories(token),
-    retry: 0,
   });
-
-  if (isFetching) {
-    console.log("is fetching");
-  }
-  if (isPending) {
-    console.log("is pending");
-  }
 
   return (
     <div>
       <CategoryBtnBox
         title="دسته بندی های پیامک"
         iconSrc={allSmsCategoriesIcon}
-        onClick={handleClickOpen}
+        onClick={() => setOpen(true)}
         className="bg-violet-400"
       />
       <Dialog
         fullScreen={isBelowMd}
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         fullWidth
         maxWidth={"md"}
         sx={{
@@ -65,12 +48,16 @@ const AllSmsCategories = () => {
       >
         <DialogHeader
           title={"دسته بندی های پیامک"}
-          onClose={handleClose}
+          onClose={() => setOpen(false)}
           belowMediaQuery={isBelowMd}
         />
         <DialogContent>
           <Box sx={{ width: "100%" }}>
-            <DataTable columns={columns} rows={rows} custom_ID={"message_ID"} />
+            <DataTable
+              columns={columns}
+              rows={data?.result.messages || []}
+              custom_ID={"message_ID"}
+            />
           </Box>
         </DialogContent>
       </Dialog>
