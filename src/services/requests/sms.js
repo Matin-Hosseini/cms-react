@@ -6,11 +6,8 @@ export const getSmsCategories = async (token) =>
 export const sentMessages = async (token) =>
   (await Api.post("/PanelSms/ShowAllPostedSmsLog", { token })).data;
 
-export const sendSmsToAnyone = async ({ token, text, phoneNumber }) =>
-  (
-    await Api.post("/PanelSms/SendSmsToAnyOne", {
-      token,
-      text,
-      phoneNumber,
-    })
-  ).data;
+export const sendSmsToAnyone = async (data) =>
+  (await Api.post("/PanelSms/SendSmsToAnyOne", data)).data;
+
+export const sendListSmsToAnyOne = async (data) =>
+  (await Api.post("/PanelSms/SendListSmsToAnyOne", data)).data;

@@ -3,46 +3,33 @@ import {
   Chip,
   FormControl,
   InputLabel,
-  ListItem,
   MenuItem,
-  Paper,
   Select,
   TextField,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SubmitBtn from "../../../components/SubmitBtn";
 import { useForm } from "react-hook-form";
-import { phoneRegex } from "../../../utils/regexs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
-import { z } from "zod";
-import Api from "../../../axios/api";
 import { useSnackbar } from "../../../contexts/snackbar";
 import { CiViewList } from "react-icons/ci";
 import { TbFileSad } from "react-icons/tb";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { sendListSmsToAnyOne } from "../../../services/requests/sms";
+import { sendListSmsToAnyOneSchema } from "../../../validations/schemas/panelSms";
 
 export default function SendToMany({ disabled, messages }) {
-  const [number, setNumber] = useState("");
   const [numbers, setNumbers] = useState([]);
-  const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
   const [selectBoxValue, setSelectBoxValue] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const token = Cookies.get("token");
 
   const { showSnackbar } = useSnackbar();
 
   const queryClient = useQueryClient();
-
-  const schema = z.object({
-    phoneNumber: z
-      .string()
-      .min(1, "لطفا شماره موبایل را وارد کنید.")
-      .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
-  });
 
   const {
     register,
@@ -51,7 +38,20 @@ export default function SendToMany({ disabled, messages }) {
     trigger,
     getValues,
     formState: { errors },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(sendListSmsToAnyOneSchema) });
+
+  const mutation = useMutation({
+    mutationFn: async (data) => await sendListSmsToAnyOne(data),
+    onSuccess: async () => {
+      showSnackbar("پیام ارسال شد.");
+      queryClient.invalidateQueries(["sent-messages"]);
+
+      setNumbers([]);
+    },
+    onError: () => {
+      showSnackbar("خطا در برقراری ارتباط");
+    },
+  });
 
   const submitHandler = async () => {
     setIsSubmitted(true);
@@ -61,34 +61,15 @@ export default function SendToMany({ disabled, messages }) {
       return;
     }
     if (!selectedValue) return;
-    setIsSubmitting(true);
 
     const phoneNumbers = [];
     numbers.forEach((item) => phoneNumbers.push(item?.phoneNumber));
-    console.log(phoneNumbers);
 
-    try {
-      const res = await Api.post("/PanelSms/SendListSmsToAnyOne", {
-        token,
-        phoneNumbers,
-        text: selectedValue,
-      });
-      console.log(res.data);
-
-      showSnackbar("پیام ارسال شد.");
-      queryClient.invalidateQueries(["sent-messages"]);
-
-      setNumbers([]);
-    } catch (error) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        showSnackbar(`شما درسترسی لازم به این قسمت را ندارید`);
-      } else {
-        showSnackbar("خطا در برقراری ارتباط");
-      }
-    }
-
-    setIsSubmitting(false);
+    mutation.mutate({
+      token,
+      phoneNumbers,
+      text: selectedValue,
+    });
   };
 
   const handleDelete = (id) => {
@@ -183,16 +164,14 @@ export default function SendToMany({ disabled, messages }) {
               addNumber(e.target.value);
             },
           })}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber?.message}
         />
-        {errors.phoneNumber && (
-          <span className="text-red-400 block mb-2 text-xs">
-            {errors.phoneNumber.message}
-          </span>
-        )}
+
         <SubmitBtn
           onClick={submitHandler}
           className="bg-purple-600"
-          isSubmitting={isSubmitting}
+          isSubmitting={mutation.isPending}
           disabled={disabled}
           type="button"
         >

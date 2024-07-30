@@ -20,3 +20,10 @@ export const sendSmsToAnyoneSchema = z.object({
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
 });
+
+export const sendListSmsToAnyOneSchema = z.object({
+  phoneNumber: z
+    .string()
+    .min(1, "لطفا شماره موبایل را وارد کنید.")
+    .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
+});
