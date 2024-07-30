@@ -5,3 +5,6 @@ export const getAllUsers = async (data) =>
 
 export const getUserInformation = async (data) =>
   (await Api.post("/User/GetUserInformation", data)).data;
+
+export const addUser = async (data) =>
+  (await Api.post("/User/AddUser", data)).data;
