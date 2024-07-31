@@ -34,6 +34,7 @@ const AllSentMessages = () => {
   if (isFetching) {
     console.log("sent messeges is fetching");
   }
+  console.log(data);
 
   return (
     <>
