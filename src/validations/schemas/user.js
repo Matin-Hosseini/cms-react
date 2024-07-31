@@ -13,4 +13,5 @@ export const getUserInformationSchema = z.object({
 export const addUserSchema = z.object({
   userName: z.string().min(1, "نام کاربری الزامی است."),
   password: z.string().min(1, "رمز عبور الزامی است."),
+  role_ID: z.string().min(1, "لطفا نقش را انتخاب کنید."),
 });
