@@ -5,6 +5,7 @@ import {
 } from "../../../validations/schemas/panelSms";
 import {
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -13,7 +14,7 @@ import {
 import SubmitBtn from "../../../components/SubmitBtn";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { phoneRegex } from "../../../utils/regexs";
 import { useSnackbar } from "../../../contexts/snackbar";
 import Cookies from "js-cookie";
@@ -22,10 +23,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { sendSmsToAnyone } from "../../../services/requests/sms";
 
 const SendToSingle = ({ disabled, messages }) => {
-  const [selectedValue, setSelectedValue] = useState("");
-  const [selectBoxTextValue, setSelectBoxTextValue] = useState("");
-  const [selectBoxValue, setSelectBoxValue] = useState("");
-
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -35,6 +32,7 @@ const SendToSingle = ({ disabled, messages }) => {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm({
     resolver: zodResolver(sendSmsToAnyoneSchema),
@@ -53,13 +51,11 @@ const SendToSingle = ({ disabled, messages }) => {
     },
   });
 
-  const submitHandler = async (data) => {
-    if (!selectedValue) return;
-
+  const submitHandler = async ({ phoneNumber, text }) => {
     const requestData = {
       token,
-      text: selectedValue,
-      phoneNumber: data.phoneNumber,
+      text,
+      phoneNumber,
     };
 
     mutation.mutate(requestData);
@@ -70,33 +66,24 @@ const SendToSingle = ({ disabled, messages }) => {
       onSubmit={handleSubmit(submitHandler)}
       className="max-w-96 mx-auto mt-5"
     >
-      <FormControl fullWidth className="mb-3">
+      <FormControl fullWidth className="mb-3" error={!!errors.text}>
         <InputLabel id="message-category">دسته بندی</InputLabel>
-        <Select
-          labelId="message-category"
-          id="messega-cateogyr-select"
-          value={selectBoxValue}
-          label="دسته بندی"
-          onChange={(e) => setSelectBoxValue(e.target.value)}
-        >
-          {messages.map((message) => (
-            <MenuItem
-              value={message.text}
-              onClick={() => {
-                setSelectedValue(message.text);
-              }}
-              key={Math.random()}
-            >
-              {message.title}
-            </MenuItem>
-          ))}
-        </Select>
+        <Controller
+          name="text"
+          defaultValue=""
+          control={control}
+          render={({ field }) => (
+            <Select labelId="message-category" label="دسته بندی" {...field}>
+              {messages.map((message) => (
+                <MenuItem value={message.text} key={Math.random()}>
+                  {message.title}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
+        <FormHelperText>{!!errors.text && errors.text.message}</FormHelperText>
       </FormControl>
-      {isSubmitted && !selectedValue && (
-        <span className="text-red-400 block mb-2 text-xs">
-          لطفا یک دسته بندی را انتخاب کنید.
-        </span>
-      )}
       <TextField
         fullWidth
         className="mb-3"
