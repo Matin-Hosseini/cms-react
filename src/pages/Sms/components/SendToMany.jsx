@@ -20,6 +20,7 @@ import { sendListSmsToAnyOne } from "../../../services/requests/sms";
 import { sendListSmsToAnyOneSchema } from "../../../validations/schemas/panelSms";
 
 export default function SendToMany({ disabled, messages }) {
+  console.log("inside the send to many");
   const [numbers, setNumbers] = useState([]);
   const [selectedValue, setSelectedValue] = useState("");
   const [selectBoxValue, setSelectBoxValue] = useState("");
@@ -49,7 +50,7 @@ export default function SendToMany({ disabled, messages }) {
       setNumbers([]);
     },
     onError: () => {
-      showSnackbar("خطا در برقراری ارتباط");
+      showSnackbar("خطا در برقراری ارتباط", "error");
     },
   });
 
@@ -57,7 +58,7 @@ export default function SendToMany({ disabled, messages }) {
     setIsSubmitted(true);
 
     if (!numbers.length) {
-      showSnackbar("لطفا ابتدا شماره های مدنظر را وارد کنید.");
+      showSnackbar("لطفا ابتدا شماره های مدنظر را وارد کنید.", "error");
       return;
     }
     if (!selectedValue) return;
@@ -96,7 +97,6 @@ export default function SendToMany({ disabled, messages }) {
 
       const phoneNumber = getValues("phoneNumber");
 
-      const { success } = schema.safeParse({ phoneNumber });
       const isValid = await trigger("phoneNumber");
 
       if (!isValid) return;
