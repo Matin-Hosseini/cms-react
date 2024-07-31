@@ -19,7 +19,6 @@ export const sendSmsToAnyoneSchema = z.object({
     .string()
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
-  text: z.string().min(1, "دسته بندی پیام الزامی می باشد."),
 });
 
 export const sendListSmsToAnyOneSchema = z.object({
