@@ -9,28 +9,33 @@ import {
   Fade,
   IconButton,
   Modal,
+  Paper,
   Snackbar,
+  Table as MuiTable,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { faIR } from "@mui/x-data-grid/locales";
 import { useState } from "react";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { BiMessageSquareAdd } from "react-icons/bi";
 import DeleteDialog from "./DeleteDialog";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { IoMdClose } from "react-icons/io";
-import DialogHeader from "./DialogHeader";
-import Api from "../axios/api";
 import { useSnackbar } from "../contexts/snackbar";
+import { useMutation } from "@tanstack/react-query";
+import { getCustomerGameDetails } from "../services/requests/customers";
+import { IoMdCheckmark } from "react-icons/io";
+import { RiCloseLargeFill } from "react-icons/ri";
+import { RxEyeOpen } from "react-icons/rx";
 
 export default function Table({ customers }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteDialogRow, setDeleteDialogRow] = useState({});
-  // const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [detailsDialog, setDetailsDialog] = useState(false);
 
   const { showSnackbar } = useSnackbar();
@@ -61,17 +66,16 @@ export default function Table({ customers }) {
     }
   };
 
+  const token = Cookies.get("token");
+
+  const mutation = useMutation({
+    mutationFn: async (data) => await getCustomerGameDetails(data),
+  });
+
   const showCustomerInfo = async (row) => {
     setDetailsDialog(true);
-    console.log(row);
 
-    try {
-      const res = await Api.post("");
-
-      console.log(res.data);
-    } catch (error) {
-      showSnackbar("خطا در دریافت اطلاعات.");
-    }
+    mutation.mutate({ token, customer_Id: row.customer_ID });
   };
 
   const columns = [
@@ -85,33 +89,22 @@ export default function Table({ customers }) {
       editable: true,
     },
     { field: "nationalCode", headerName: "کد ملی", type: "string", width: 120 },
-    // {
-    //   field: "actions",
-    //   headerName: "",
-    //   width: 140,
-    //   sortable: false,
-    //   renderCell: (params) => {
-    //     return (
-    //       <div className="flex items-center h-full">
-    //         {/* <IconButton
-    //           onClick={() => {
-    //             setShowDeleteModal(true);
-    //             setDeleteDialogRow(params.row);
-    //           }}
-    //         >
-    //           <FaRegTrashAlt className="text-red-500 text-lg" />
-    //         </IconButton> */}
-
-    //         {/* <IconButton onClick={() => sendSMS(params)}>
-    //           <BiMessageSquareAdd className="text-green-500 text-lg" />
-    //         </IconButton> */}
-    //         <Button onClick={() => showCustomerInfo(params.row)}>
-    //           مشاهده جزئیات
-    //         </Button>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "actions",
+      headerName: "",
+      width: 140,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <div className="flex items-center h-full">
+            <Button color="success" onClick={() => showCustomerInfo(params.row)} className="flex items-center gap-2">
+              <RxEyeOpen />
+              جزئیات
+            </Button>
+          </div>
+        );
+      },
+    },
     // {
     //   field: "actions",
     //   headerName: "",
@@ -194,8 +187,68 @@ export default function Table({ customers }) {
         />
       </div>
 
-      <Dialog open={detailsDialog} onClose={() => setDetailsDialog(false)}>
-        <DialogContent>content</DialogContent>
+      <Dialog
+        open={detailsDialog}
+        onClose={() => setDetailsDialog(false)}
+        maxWidth="xl"
+      >
+        <DialogContent>
+          <p className="mb-5">
+            مشخطات{" "}
+            {`${mutation.data?.result.firstName}  ${mutation.data?.result.lastName}`}
+          </p>
+
+          <TableContainer component={Paper}>
+            <MuiTable
+              sx={{ "& th, & td": { whiteSpace: "nowrap" } }}
+              size="medium"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>بازی</TableCell>
+                  <TableCell>ساعت حضور</TableCell>
+                  <TableCell>برنده</TableCell>
+                  <TableCell>زمان حضور</TableCell>
+                  <TableCell>وضعیت حضور</TableCell>
+                  <TableCell>کد رهگیری</TableCell>
+                  <TableCell>توضیحات</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {mutation.data?.result.games.map((game) => (
+                  <TableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    key={game.id}
+                  >
+                    <TableCell>{game.name}</TableCell>
+                    <TableCell>{game.hourPresent || "وارد نشده"}</TableCell>
+                    <TableCell>
+                      {game.isWinner ? (
+                        <IoMdCheckmark className="text-green-600 text-xl" />
+                      ) : (
+                        <RiCloseLargeFill className="text-red-600 text-xl" />
+                      )}
+                    </TableCell>
+                    <TableCell>{game.timePresent || "وارد نشده"}</TableCell>
+                    <TableCell>
+                      {game.isPresentOnTime === 0 ? (
+                        "مسابقه شروع نشده"
+                      ) : game.isPresentOnTime === 1 ? (
+                        <IoMdCheckmark className="text-green-600 text-xl" />
+                      ) : game.isPresentOnTime === 2 ? (
+                        <RiCloseLargeFill className="text-red-600 text-xl" />
+                      ) : (
+                        ""
+                      )}
+                    </TableCell>
+                    <TableCell>{game.trackingCode}</TableCell>
+                    <TableCell>{game.message}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </MuiTable>
+          </TableContainer>
+        </DialogContent>
       </Dialog>
     </>
   );
