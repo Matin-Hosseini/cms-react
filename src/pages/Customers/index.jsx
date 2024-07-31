@@ -24,10 +24,10 @@ export default function Home() {
 
   return (
     <>
-      {/* <AddNewCustomer />
-      <Table customers={data?.result.informationCustomer || []} /> */}
-      <Test />
-      <ShouldValidate />
+      <AddNewCustomer />
+      <Table customers={data?.result.informationCustomer || []} />
+      {/* <Test />
+      <ShouldValidate /> */}
     </>
   );
 }
