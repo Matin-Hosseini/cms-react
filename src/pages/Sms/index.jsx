@@ -2,15 +2,10 @@ import AddSMSCategory from "./components/AddSmsCategory";
 import SendSms from "./components/SendSms";
 
 import AllSmsCategories from "./components/AllSmsCategories";
-import { useAuthContext } from "../../contexts/auth";
 import WithPermission from "../../HOCs/withPermission";
 import AllSentMessages from "./components/AllSentMessages";
 
 const Sms = () => {
-  const {
-    userInfo: { permissions },
-  } = useAuthContext();
-
   const SendSmsWithPermission = WithPermission(SendSms, 22);
 
   const AllSmsCategoriesWithPermission = WithPermission(AllSmsCategories, 24);
