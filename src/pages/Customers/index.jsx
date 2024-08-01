@@ -6,6 +6,7 @@ import { getAllCustomers } from "../../services/requests/customers";
 import Test from "../../components/Test";
 import { useForm } from "react-hook-form";
 import ShouldValidate from "../../components/ShouldValidate";
+import Date from "../../components/Date";
 
 export default function Home() {
   const { data } = useQuery({
@@ -26,6 +27,7 @@ export default function Home() {
     <>
       <AddNewCustomer />
       <Table customers={data?.result.informationCustomer || []} />
+      <Date />
       {/* <Test />
       <ShouldValidate /> */}
     </>
