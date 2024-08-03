@@ -5,3 +5,6 @@ export const getAllCustomers = async (data) =>
 
 export const getCustomerGameDetails = async (data) =>
   (await Api.post("/Gaming/ShowDetailCustmersGaming", data)).data;
+
+export const addNewCustomer = async (data) =>
+  (await Api.post("/Customer/AddNewCustomer", data)).data;
