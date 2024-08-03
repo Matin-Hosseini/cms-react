@@ -14,17 +14,33 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { newCustomerSchema } from "./../validations/schemas/customer";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addNewCustomer } from "../services/requests/customers";
+import Cookies from "js-cookie";
+import { useSnackbar } from "../contexts/snackbar";
 
 const AddNewCustomer = () => {
   const [showDialog, setshowDialog] = useState(false);
 
   const addNewCustomerShema = z.object(newCustomerSchema);
 
+  const { showSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (data) => await addNewCustomer(data),
+    onSuccess: () => {
+      showSnackbar("مشتری جدید افزوده شد.");
+
+      queryClient.invalidateQueries(["customers"]);
+    },
+  });
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(addNewCustomerShema),
   });
@@ -35,7 +51,19 @@ const AddNewCustomer = () => {
   };
 
   const submitHandler = async (data) => {
-    console.log(data);
+    const mutationData = {
+      typeOfRegister_Id: 1,
+      trackingCode: 0,
+      newCustomer: {
+        nationalCode: data.nationalCode,
+        phoneNumber: data.phoneNumber,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      },
+      token: Cookies.get("token"),
+    };
+
+    mutation.mutate(mutationData);
   };
 
   return (
