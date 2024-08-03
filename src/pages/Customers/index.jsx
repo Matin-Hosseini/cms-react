@@ -3,10 +3,7 @@ import Table from "../../components/Table";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCustomers } from "../../services/requests/customers";
-import Test from "../../components/Test";
-import { useForm } from "react-hook-form";
-import ShouldValidate from "../../components/ShouldValidate";
-import Date from "../../components/Date";
+import gregorianToJalaali from "../../utils/funcs/gregorianToJalaali";
 
 export default function Home() {
   const { data } = useQuery({
@@ -21,13 +18,16 @@ export default function Home() {
       }),
   });
 
-  // const {Controller, } = useForm()
+  const customers = data?.result.informationCustomer.map((customer) => ({
+    ...customer,
+    registerDate: gregorianToJalaali(customer.registerDate),
+  }));
+
 
   return (
     <>
       <AddNewCustomer />
-      <Table customers={data?.result.informationCustomer || []} />
-      <Date />
+      <Table customers={customers || []} />
       {/* <Test />
       <ShouldValidate /> */}
     </>

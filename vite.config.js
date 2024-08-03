@@ -7,4 +7,7 @@ export default defineConfig({
   // server: {
   //   host: true,
   // },
+  optimizeDeps: {
+    include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],
+  },
 });

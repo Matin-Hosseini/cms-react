@@ -32,16 +32,32 @@ import { getCustomerGameDetails } from "../services/requests/customers";
 import { IoMdCheckmark } from "react-icons/io";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { RxEyeOpen } from "react-icons/rx";
+import DialogHeader from "./DialogHeader";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@emotion/react";
+import { Calendar } from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker";
+import dayjs from "dayjs";
+
+import "dayjs/locale/fa";
 import gregorianToJalaali from "../utils/funcs/gregorianToJalaali";
-import { LuMessageSquarePlus } from "react-icons/lu";
-import Date from "./Date";
+
+dayjs.locale("fa");
 
 export default function Table({ customers }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteDialogRow, setDeleteDialogRow] = useState({});
   const [detailsDialog, setDetailsDialog] = useState(false);
-  const [sendSmsDialog, setSendSmsDialog] = useState(false);
+  const [dateDialog, setDateDialog] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [selectedTime, setSelectedtime] = useState(dayjs());
 
   const { showSnackbar } = useSnackbar();
 
@@ -90,7 +106,13 @@ export default function Table({ customers }) {
     { field: "phoneNumber", headerName: "شماره موبایل", width: 150 },
     { field: "nationalCode", headerName: "کد ملی", type: "string", width: 120 },
     {
-      field: "details",
+      field: "registerDate",
+      headerName: "تاریخ ثبت نام",
+      type: "string",
+      width: 200,
+    },
+    {
+      field: "actions",
       headerName: "",
       width: 140,
       sortable: false,
@@ -98,7 +120,7 @@ export default function Table({ customers }) {
         return (
           <div className="flex items-center h-full">
             <Button
-              color="primary"
+              color="success"
               onClick={() => showCustomerInfo(params.row)}
               className="flex items-center gap-2"
             >
@@ -178,6 +200,24 @@ export default function Table({ customers }) {
     setShowDeleteModal(false);
   };
 
+  const theme = useTheme();
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date.toDate());
+  };
+
+  const onSend = () => {
+    const dateTime = dayjs(selectedDate)
+      .hour(selectedTime.hour())
+      .minute(selectedTime.minute())
+      .second(0)
+      .millisecond(0);
+    console.log(dateTime.toISOString());
+    console.log(gregorianToJalaali(dateTime.toISOString()));
+    console.log(selectedTime.format("HH:mm"));
+  };
+
   return (
     <>
       <div style={{ height: 650, width: "100%" }}>
@@ -215,98 +255,145 @@ export default function Table({ customers }) {
         open={detailsDialog}
         onClose={() => setDetailsDialog(false)}
         maxWidth="xl"
+        fullWidth
       >
         <DialogContent>
-          <Box>
-            {mutation.isPending ? (
-              <div>
-                <Skeleton
-                  variant="rectangular"
-                  width={210}
-                  height={30}
-                  sx={{ mb: 2 }}
-                />
-                <Skeleton variant="rectangular" width={"100%"} height={50} />
-              </div>
-            ) : (
-              <>
-                <p className="mb-5">
-                  مشخطات{" "}
-                  {`${mutation.data?.result.firstName}  ${mutation.data?.result.lastName}`}
-                </p>
-                <TableContainer component={Paper}>
-                  <MuiTable
-                    sx={{ "& th, & td": { whiteSpace: "nowrap" } }}
-                    size="medium"
+          <p className="mb-5">
+            مشخطات{" "}
+            {`${mutation.data?.result.firstName}  ${mutation.data?.result.lastName}`}
+          </p>
+
+          <TableContainer component={Paper}>
+            <MuiTable
+              sx={{ "& th, & td": { whiteSpace: "nowrap" } }}
+              size="medium"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>بازی</TableCell>
+                  <TableCell>ساعت حضور</TableCell>
+                  <TableCell>برنده</TableCell>
+                  <TableCell>زمان حضور</TableCell>
+                  <TableCell>وضعیت حضور</TableCell>
+                  <TableCell>کد رهگیری</TableCell>
+                  <TableCell>توضیحات</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {mutation.data?.result.games.map((game) => (
+                  <TableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    key={game.id}
                   >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>بازی</TableCell>
-                        <TableCell>ساعت حضور</TableCell>
-                        <TableCell>برنده</TableCell>
-                        <TableCell>زمان حضور</TableCell>
-                        <TableCell>وضعیت حضور</TableCell>
-                        <TableCell>کد رهگیری</TableCell>
-                        <TableCell>توضیحات</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {mutation.data?.result.games.map((game) => (
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                          key={game.id}
-                        >
-                          {console.log(game)}
-                          <TableCell>{game.name}</TableCell>
-                          <TableCell>
-                            {game.hourPresent || "وارد نشده"}
-                          </TableCell>
-                          <TableCell>
-                            {game.isWinner ? (
-                              <IoMdCheckmark className="text-green-600 text-xl" />
-                            ) : (
-                              <RiCloseLargeFill className="text-red-600 text-xl" />
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {game.timePresent
-                              ? gregorianToJalaali(game.timePresent)
-                              : "وارد نشده"}
-                          </TableCell>
-                          <TableCell>
-                            {game.isPresentOnTime === 0 ? (
-                              "مسابقه شروع نشده"
-                            ) : game.isPresentOnTime === 1 ? (
-                              <IoMdCheckmark className="text-green-600 text-xl" />
-                            ) : game.isPresentOnTime === 2 ? (
-                              <RiCloseLargeFill className="text-red-600 text-xl" />
-                            ) : (
-                              ""
-                            )}
-                          </TableCell>
-                          <TableCell>{game.trackingCode}</TableCell>
-                          <TableCell>{game.message}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </MuiTable>
-                </TableContainer>
-              </>
-            )}
-          </Box>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={sendSmsDialog}
-        onClose={() => setSendSmsDialog(false)}
-        maxWidth="xl"
-      >
-        <DialogContent>
-          <Box>
-            <Date />
-          </Box>
+                    {console.log(game)}
+                    <TableCell>{game.name}</TableCell>
+                    <TableCell>{game.hourPresent || "وارد نشده"}</TableCell>
+                    <TableCell>
+                      {game.isWinner ? (
+                        <IoMdCheckmark className="text-green-600 text-xl" />
+                      ) : (
+                        <RiCloseLargeFill className="text-red-600 text-xl" />
+                      )}
+                    </TableCell>
+                    <TableCell>{game.timePresent || "وارد نشده"}</TableCell>
+                    <TableCell>
+                      {game.isPresentOnTime === 0 ? (
+                        "مسابقه شروع نشده"
+                      ) : game.isPresentOnTime === 1 ? (
+                        <IoMdCheckmark className="text-green-600 text-xl" />
+                      ) : game.isPresentOnTime === 2 ? (
+                        <RiCloseLargeFill className="text-red-600 text-xl" />
+                      ) : (
+                        ""
+                      )}
+                    </TableCell>
+                    <TableCell>{game.trackingCode}</TableCell>
+                    <TableCell>
+                      {!game.message ? (
+                        <>
+                          <Button onClick={() => setDateDialog(true)}>
+                            تنظیم تاریخ و ساعت
+                          </Button>
+                          <Dialog
+                            open={dateDialog}
+                            onClose={() => setDateDialog(false)}
+                            fullWidth
+                            fullScreen={isBelowMd}
+                            maxWidth="md"
+                            sx={{
+                              "& .MuiDialog-container .MuiPaper-root": {
+                                height: "100%",
+                              },
+                            }}
+                          >
+                            <DialogHeader
+                              title={"تنظیم تاریخ پیامک"}
+                              onClose={() => setDateDialog(false)}
+                              belowMediaQuery={isBelowMd}
+                            />
+                            <DialogContent
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                gap: 2,
+                              }}
+                            >
+                              <div className="flex flex-col items-center lg:flex-row justify-between">
+                                <div className="mb-5">
+                                  <Calendar
+                                    calendar={persian}
+                                    locale={persian_fa}
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                  />
+                                </div>
+
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDayjs}
+                                  localeText={{
+                                    cancelButtonLabel: "لغو",
+                                    clearButtonLabel: "پاک کردن",
+                                    okButtonLabel: "تایید",
+                                    timePickerToolbarTitle: "انتخاب ساعت",
+                                  }}
+                                >
+                                  <StaticTimePicker
+                                    sx={{
+                                      "& .MuiDialogActions-root": {
+                                        display: "none",
+                                      },
+                                    }}
+                                    orientation="portrait"
+                                    openTo="hours"
+                                    ampm={false}
+                                    value={selectedTime}
+                                    onChange={(time) => setSelectedtime(time)}
+                                  />
+                                </LocalizationProvider>
+                              </div>
+                              <div>
+                                <Button
+                                  fullWidth
+                                  className="py-3"
+                                  variant="contained"
+                                  onClick={onSend}
+                                >
+                                  ارسال
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </>
+                      ) : (
+                        "تاریخ و ساعت در نظر گرفته شده است."
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </MuiTable>
+          </TableContainer>
         </DialogContent>
       </Dialog>
     </>
