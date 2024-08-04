@@ -13,13 +13,13 @@ const pages = [
     icon: <PiUsersThreeLight />,
     permissionIDs: [9, 10, 15, 25],
   },
-  {
-    id: 2,
-    route: "/cup",
-    title: "کاپ",
-    icon: <GiTrophyCup />,
-    permissionIDs: [12, 13, 14],
-  },
+  // {
+  //   id: 2,
+  //   route: "/cup",
+  //   title: "کاپ",
+  //   icon: <GiTrophyCup />,
+  //   permissionIDs: [12, 13, 14],
+  // },
   {
     id: 3,
     route: "/sms",
@@ -34,13 +34,13 @@ const pages = [
     icon: <FiUsers />,
     permissionIDs: [16, 18, 19, 26],
   },
-  {
-    id: 5,
-    route: "/permissions",
-    title: "دسترسی ها",
-    icon: <MdOutlineSwitchAccessShortcut />,
-    permissionIDs: [1, 2, 3, 16, 17],
-  },
+  // {
+  //   id: 5,
+  //   route: "/permissions",
+  //   title: "دسترسی ها",
+  //   icon: <MdOutlineSwitchAccessShortcut />,
+  //   permissionIDs: [1, 2, 3, 16, 17],
+  // },
   {
     id: 6,
     route: "/roles",

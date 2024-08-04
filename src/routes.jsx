@@ -10,6 +10,7 @@ const Sms = lazy(() => import("./pages/Sms"));
 const Users = lazy(() => import("./pages/Users"));
 const WithAuth = lazy(() => import("./HOCs/withPermission"));
 const DoesNotHaveAccess = lazy(() => import("./pages/DoesNotHaveAccess"));
+const Role = lazy(() => import("./pages/Role"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -25,14 +26,14 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      {
-        path: "/cup",
-        element: (
-          <DoesNotHaveAccess>
-            <IsProgressing />
-          </DoesNotHaveAccess>
-        ),
-      },
+      // {
+      //   path: "/cup",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <IsProgressing />
+      //     </DoesNotHaveAccess>
+      //   ),
+      // },
       {
         path: "/sms",
         element: (
@@ -49,14 +50,14 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      {
-        path: "/permissions",
-        element: (
-          <DoesNotHaveAccess>
-            <IsProgressing />
-          </DoesNotHaveAccess>
-        ),
-      },
+      // {
+      //   path: "/permissions",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <IsProgressing />
+      //     </DoesNotHaveAccess>
+      //   ),
+      // },
       {
         path: "/permissions",
         element: (
@@ -69,7 +70,7 @@ const routes = [
         path: "/roles",
         element: (
           <DoesNotHaveAccess>
-            <IsProgressing />
+            <Role />
           </DoesNotHaveAccess>
         ),
       },
