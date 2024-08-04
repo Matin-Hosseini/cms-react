@@ -70,7 +70,7 @@ const routes = [
         path: "/roles",
         element: (
           <DoesNotHaveAccess>
-            <Role />
+            <IsProgressing />
           </DoesNotHaveAccess>
         ),
       },
