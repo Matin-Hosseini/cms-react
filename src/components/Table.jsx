@@ -11,6 +11,11 @@ import {
   TableRow,
   Skeleton,
   Typography,
+  Box,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { faIR } from "@mui/x-data-grid/locales";
@@ -41,6 +46,9 @@ import gregorianToJalaali from "../utils/funcs/gregorianToJalaali";
 import { addCustomerGaming } from "../services/requests/gaming";
 import ThreeDotsLoading from "./ThreeDotLoading";
 
+import { BsSend } from "react-icons/bs";
+import { Controller, useForm } from "react-hook-form";
+
 dayjs.locale("fa");
 
 export default function Table({ customers }) {
@@ -51,6 +59,7 @@ export default function Table({ customers }) {
   const [dateDialog, setDateDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentRow, setCurrentRow] = useState(0);
+  const [sendMessageDialog, setSendMessageDialog] = useState(false);
 
   const [selectedTime, setSelectedtime] = useState(dayjs());
 
@@ -80,12 +89,14 @@ export default function Table({ customers }) {
     }
   };
 
+  const { control } = useForm();
+
   const token = Cookies.get("token");
 
   const mutation = useMutation({
     mutationFn: async (data) => await getCustomerGameDetails(data),
   });
-  
+
   const addCustomerGamingMutation = useMutation({
     mutationFn: async (data) => await addCustomerGaming(data),
     onSuccess: () => {
@@ -104,6 +115,12 @@ export default function Table({ customers }) {
     setCurrentRow(row.customer_ID);
 
     mutation.mutate({ token, customer_Id: row.customer_ID });
+  };
+
+  const sendMessageHandler = async (row) => {
+    setSendMessageDialog(true);
+
+    console.log(row);
   };
 
   const columns = [
@@ -133,6 +150,26 @@ export default function Table({ customers }) {
             >
               <RxEyeOpen />
               جزئیات
+            </Button>
+          </div>
+        );
+      },
+    },
+    {
+      field: "send-message",
+      headerName: "",
+      width: 140,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <div className="flex items-center h-full">
+            <Button
+              color="secondary"
+              onClick={() => sendMessageHandler(params.row)}
+              className="flex items-center gap-2"
+            >
+              <BsSend />
+              ارسال پیام
             </Button>
           </div>
         );
@@ -429,6 +466,48 @@ export default function Table({ customers }) {
               </TableContainer>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={sendMessageDialog}
+        onClose={() => setSendMessageDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogHeader
+          title={"ارسال پیام"}
+          onClose={() => setDateDialog(false)}
+          belowMediaQuery={isBelowMd}
+        />
+        <DialogContent>
+          <Box width={"100%"}>
+            <form action="">
+              <FormControl fullWidth className="mb-3">
+                <InputLabel id="message-category">دسته بندی پیام</InputLabel>
+                <Controller
+                  name="text"
+                  defaultValue=""
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      fullWidth
+                      labelId="message-category"
+                      label="دسته بندی پیام"
+                      {...field}
+                    >
+                      <MenuItem>دسته بندی 1</MenuItem>
+                      {/* {messages.map((message) => (
+                    <MenuItem value={message.text} key={Math.random()}>
+                      {message.title}
+                    </MenuItem>
+                  ))} */}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </form>
+          </Box>
         </DialogContent>
       </Dialog>
     </>
