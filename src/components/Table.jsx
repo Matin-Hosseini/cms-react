@@ -10,6 +10,7 @@ import { RxEyeOpen } from "react-icons/rx";
 import { useTheme } from "@emotion/react";
 import { BsSend } from "react-icons/bs";
 import CustomerDetails from "../pages/Customers/components/CustomerDetails";
+import SendSms from "../pages/Customers/components/SendSms";
 
 export default function Table({ customers }) {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -54,7 +55,7 @@ export default function Table({ customers }) {
   const sendMessageHandler = async (row) => {
     setSendMessageDialog(true);
 
-    console.log(row);
+    setCurrentCustomer(row);
   };
 
   const columns = [
@@ -168,54 +169,16 @@ export default function Table({ customers }) {
           onDelete={deleteCustomer}
         />
       </div>
-
       <CustomerDetails
         open={detailsDialog}
         onClose={() => setDetailsDialog(false)}
         customer={currentCustomer}
       />
-
-      {/* <Dialog
+      <SendSms
         open={sendMessageDialog}
         onClose={() => setSendMessageDialog(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogHeader
-          title={"ارسال پیام"}
-          onClose={() => setDateDialog(false)}
-          belowMediaQuery={isBelowMd}
-        />
-        <DialogContent>
-          <Box width={"100%"}>
-            <form action="">
-              <FormControl fullWidth className="mb-3">
-                <InputLabel id="message-category">دسته بندی پیام</InputLabel>
-                <Controller
-                  name="text"
-                  defaultValue=""
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      fullWidth
-                      labelId="message-category"
-                      label="دسته بندی پیام"
-                      {...field}
-                    >
-                      <MenuItem>دسته بندی 1</MenuItem>
-                      {messages.map((message) => (
-                    <MenuItem value={message.text} key={Math.random()}>
-                      {message.title}
-                    </MenuItem>
-                  ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </form>
-          </Box>
-        </DialogContent>
-      </Dialog> */}
+        customer={currentCustomer}
+      />
     </>
   );
 }
