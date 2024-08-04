@@ -97,9 +97,6 @@ const AddUser = ({ roles }) => {
         />
         <DialogContent>
           <Box className="w-full">
-            <Alert color="warning" sx={{ mb: 2 }}>
-              این بخش در حال تکمیل می باشد.
-            </Alert>
             <form
               action="#"
               className=""
