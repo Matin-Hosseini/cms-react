@@ -41,13 +41,13 @@ const pages = [
   //   icon: <MdOutlineSwitchAccessShortcut />,
   //   permissionIDs: [1, 2, 3, 16, 17],
   // },
-  {
-    id: 6,
-    route: "/roles",
-    title: "نقش ها",
-    icon: <AiOutlineCluster />,
-    permissionIDs: [4, 5, 6, 17],
-  },
+  // {
+  //   id: 6,
+  //   route: "/roles",
+  //   title: "نقش ها",
+  //   icon: <AiOutlineCluster />,
+  //   permissionIDs: [4, 5, 6, 17],
+  // },
 ];
 
 export default pages;
