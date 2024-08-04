@@ -23,13 +23,10 @@ export default function Home() {
     registerDate: gregorianToJalaali(customer.registerDate),
   }));
 
-
   return (
     <>
       <AddNewCustomer />
       <Table customers={customers || []} />
-      {/* <Test />
-      <ShouldValidate /> */}
     </>
   );
 }
