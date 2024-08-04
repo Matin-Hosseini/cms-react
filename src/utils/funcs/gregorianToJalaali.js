@@ -8,4 +8,14 @@ const gregorianToJalaali = (sentDate) => {
   return jalaaliTime;
 };
 
+const gregorianDateToJalali = (sentDate) => {
+  const date = moment(sentDate);
+
+  const jalaaliTime = date.format("jYYYY/jMM/jDD");
+
+  return jalaaliTime;
+};
+
+export { gregorianDateToJalali };
+
 export default gregorianToJalaali;
