@@ -44,7 +44,10 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
     },
     onError: (error) => {
       console.log(error);
-      showSnackbar("خطا در برقراری ارتباط", "error");
+      showSnackbar(
+        error.response?.data.message || "خطا در برقراری ارتباط",
+        "error"
+      );
     },
   });
 
@@ -55,12 +58,15 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
       .second(0)
       .millisecond(0);
 
+    const timePresent = gregorianDateToJalali(dateTime.toISOString());
+
     const mutationData = {
       token: Cookies.get("token"),
       typeOfRegisterCustomer_ID: data.result.games[0].id,
-      timePresent: dateTime.toISOString(),
+      timePresent,
       hourPresent: selectedTime.format("HH:mm"),
     };
+    console.log(timePresent);
 
     addCustomerGamingMutation.mutate(mutationData);
   };
@@ -136,27 +142,35 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
                 پیام ارسالی:
               </Typography>
               <Typography component={"p"}>
-                {mutation.data.result.firstName} {mutation.data.result.lastName}{" "}
-                عزیز ضمن تشکر بابت ثبت نام شما بازی{" "}
-                <span className="text-blue-500">
-                  {mutation.data.result.games[0].name}
-                </span>{" "}
-                در روز{" "}
-                <span className="text-green-600">
+                شرکت کننده عزیز{" "}
+                <span className="text-green-500">
+                  {mutation.data.result.firstName}{" "}
+                  {mutation.data.result.lastName}
+                </span>
+                ،
+                <br />
+                ضمن تشکر از حضور شما در بازی های جام ایران اورجینال، به شما
+                اعلام می شود: <br /> روز{" "}
+                <span className="text-red-500">
+                  {" "}
                   {gregorianDateToJalali(
                     dayjs(selectedDate)
                       .hour(selectedTime.hour())
                       .minute(selectedTime.minute())
                       .second(0)
                       .millisecond(0)
-                      .toISOString()
                   )}
                 </span>{" "}
-                در ساعت{" "}
-                <span className="text-violet-500">
+                ساعت{" "}
+                <span className="text-orange-500">
                   {selectedTime.format("HH:mm")}
                 </span>{" "}
-                برگذار می شود. و ایران اورجینال منتظر حضور شما می باشد.
+                نوبت بازی شما می باشد. <br /> لطفا با در دست داشتن کارت ملی برای
+                شرکت در مسابقات در محل حاضر شوید. <br /> ولنجک، خیابان امیرآبادی
+                ، نبش خیابان 18ام (ایران اورجینال)
+                <br />
+                <br />
+                0217910
               </Typography>
             </div>
 
