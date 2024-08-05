@@ -23,6 +23,7 @@
     "@tanstack/react-query-devtools": "^5.51.15",
     "axios": "^1.7.2",
     "dayjs": "^1.11.12",
+    "dayjs-jalali": "^0.0.2",
     "jalaali-js": "^1.2.7",
     "js-cookie": "^3.0.5",
     "moment": "^2.30.1",
