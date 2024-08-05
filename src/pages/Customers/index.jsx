@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCustomers } from "../../services/requests/customers";
 import gregorianToJalaali from "../../utils/funcs/gregorianToJalaali";
+import WithPermission from "../../HOCs/withPermission";
 
 export default function Home() {
   const { data } = useQuery({
@@ -23,10 +24,13 @@ export default function Home() {
     registerDate: gregorianToJalaali(customer.registerDate),
   }));
 
+  const CustomersTableWithPermission = WithPermission(Table, 10);
+  const AddCustomerWithPermission = WithPermission(AddNewCustomer, 9);
+
   return (
     <>
-      <AddNewCustomer />
-      <Table customers={customers || []} />
+      <AddCustomerWithPermission />
+      <CustomersTableWithPermission customers={customers || []} />
     </>
   );
 }
