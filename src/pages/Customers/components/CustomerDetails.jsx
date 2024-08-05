@@ -87,11 +87,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                             <RiCloseLargeFill className="text-red-600 text-xl" />
                           )}
                         </TableCell>
-                        <TableCell>
-                          {game.timePresent
-                            ? gregorianDateToJalali(game.timePresent + "Z")
-                            : "وارد نشده"}
-                        </TableCell>
+                        <TableCell>{game.timePresent || "وارد نشده"}</TableCell>
                         <TableCell>
                           {game.isPresentOnTime === 0 ? (
                             "مسابقه شروع نشده"
