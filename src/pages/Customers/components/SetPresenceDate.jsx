@@ -30,6 +30,8 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
 
   const { showSnackbar } = useSnackbar();
 
+  console.log(customer);
+
   const addCustomerGamingMutation = useMutation({
     mutationFn: async (data) => await addCustomerGaming(data),
     onSuccess: () => {
@@ -52,6 +54,7 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
   });
 
   const onSend = (data) => {
+    console.log(data);
     const dateTime = dayjs(selectedDate)
       .hour(selectedTime.hour())
       .minute(selectedTime.minute())
@@ -66,7 +69,7 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
       timePresent,
       hourPresent: selectedTime.format("HH:mm"),
     };
-    console.log(timePresent);
+    console.log(mutationData);
 
     addCustomerGamingMutation.mutate(mutationData);
   };
@@ -87,7 +90,7 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
       >
         <DialogHeader
           title={"تنظیم تاریخ پیامک"}
-          onClose={() => setDateDialog(false)}
+          onClose={onClose}
           belowMediaQuery={isBelowMd}
         />
         <DialogContent
@@ -159,6 +162,7 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
                       .minute(selectedTime.minute())
                       .second(0)
                       .millisecond(0)
+                      .toISOString()
                   )}
                 </span>{" "}
                 ساعت{" "}
