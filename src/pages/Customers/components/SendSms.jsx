@@ -65,7 +65,7 @@ const SendSms = ({ open, onClose, customer }) => {
 
   useEffect(() => {
     if (Object.keys(customer).length) {
-      console.log(customer);
+      
     }
   }, [customer]);
 

@@ -11,6 +11,7 @@ import { useTheme } from "@emotion/react";
 import { BsSend } from "react-icons/bs";
 import CustomerDetails from "../pages/Customers/components/CustomerDetails";
 import SendSms from "../pages/Customers/components/SendSms";
+import { useAuthContext } from "../contexts/auth";
 
 export default function Table({ customers }) {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -58,6 +59,8 @@ export default function Table({ customers }) {
     setCurrentCustomer(row);
   };
 
+  const { userInfo } = useAuthContext();
+
   const columns = [
     // { field: "id", headerName: "شناسه", width: 70 },
     { field: "firstName", headerName: "نام", width: 130 },
@@ -73,20 +76,42 @@ export default function Table({ customers }) {
     {
       field: "actions",
       headerName: "",
-      width: 140,
+      width: userInfo.permissions.some(
+        (permission) => permission.permission_Id === 33
+      )
+        ? 140
+        : 0,
       sortable: false,
       renderCell: (params) => {
         return (
-          <div className="flex items-center h-full">
-            <Button
-              color="success"
-              onClick={() => showCustomerInfo(params.row)}
-              className="flex items-center gap-2"
-            >
-              <RxEyeOpen />
-              جزئیات
-            </Button>
-          </div>
+          <>
+            {userInfo.permissions.some(
+              (permission) => permission.permission_Id === 33
+            ) && (
+              <>
+                <div className="flex items-center h-full">
+                  <Button
+                    color="success"
+                    onClick={() => showCustomerInfo(params.row)}
+                    className="flex items-center gap-2"
+                  >
+                    <RxEyeOpen />
+                    جزئیات
+                  </Button>
+                </div>
+                <div className="flex items-center h-full">
+                  <Button
+                    color="secondary"
+                    onClick={() => sendMessageHandler(params.row)}
+                    className="flex items-center gap-2"
+                  >
+                    <BsSend />
+                    ارسال پیام
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
         );
       },
     },
