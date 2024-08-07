@@ -68,8 +68,9 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
       typeOfRegisterCustomer_ID: data.result.games[0].id,
       timePresent,
       hourPresent: selectedTime.format("HH:mm"),
+      typeOfRegisterItem_ID: 3,
+      titleGame: "دور اول",
     };
-    console.log(mutationData);
 
     addCustomerGamingMutation.mutate(mutationData);
   };
