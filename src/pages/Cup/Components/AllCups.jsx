@@ -23,7 +23,7 @@ const AllCups = () => {
         تمامی کاپ ها
       </h2>
 
-      <div className="grid xs:grid-cols-[repeat(auto-fill,_minmax(250px,_auto))]  gap-3 transition">
+      <div className="grid xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4  gap-3 transition">
         {query.isPending &&
           Array.from(Array(4).keys()).map((item) => (
             <CupBoxSkeleton key={item} />
