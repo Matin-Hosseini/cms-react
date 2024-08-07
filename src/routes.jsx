@@ -11,6 +11,7 @@ const Users = lazy(() => import("./pages/Users"));
 const WithAuth = lazy(() => import("./HOCs/withPermission"));
 const DoesNotHaveAccess = lazy(() => import("./pages/DoesNotHaveAccess"));
 const Role = lazy(() => import("./pages/Role"));
+const Cup = lazy(() => import("./pages/Cup"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -26,14 +27,14 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      // {
-      //   path: "/cup",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <IsProgressing />
-      //     </DoesNotHaveAccess>
-      //   ),
-      // },
+      {
+        path: "/cup",
+        element: (
+          <DoesNotHaveAccess>
+            <Cup />
+          </DoesNotHaveAccess>
+        ),
+      },
       {
         path: "/sms",
         element: (
