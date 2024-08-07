@@ -159,6 +159,7 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
                       .minute(selectedTime.minute())
                       .second(0)
                       .millisecond(0)
+                      .toISOString()
                   )}
                 </span>{" "}
                 ساعت{" "}
