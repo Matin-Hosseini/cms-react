@@ -13,13 +13,13 @@ const pages = [
     icon: <PiUsersThreeLight />,
     permissionIDs: [9, 10, 15, 25],
   },
-  // {
-  //   id: 2,
-  //   route: "/cup",
-  //   title: "کاپ",
-  //   icon: <GiTrophyCup />,
-  //   permissionIDs: [12, 13, 14],
-  // },
+  {
+    id: 2,
+    route: "/cup",
+    title: "کاپ",
+    icon: <GiTrophyCup />,
+    permissionIDs: [12, 13, 14],
+  },
   {
     id: 3,
     route: "/sms",
