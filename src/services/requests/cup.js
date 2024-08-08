@@ -8,3 +8,9 @@ export const addCup = async (data) =>
 
 export const removeCup = async (data) =>
   await Api.post("/Cap/RemoveTitleCap", data);
+
+export const addCupItem = async (data) =>
+  (await Api.post("/Cap/AddNewTitleCapItem", data)).data;
+
+export const getCupItems = async (data) =>
+  (await Api.post("/Cap/GetAllTitleCapItems", data)).data;
