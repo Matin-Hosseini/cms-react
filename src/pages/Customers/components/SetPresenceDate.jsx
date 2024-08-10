@@ -30,8 +30,6 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
 
   const { showSnackbar } = useSnackbar();
 
-  console.log(customer);
-
   const addCustomerGamingMutation = useMutation({
     mutationFn: async (data) => await addCustomerGaming(data),
     onSuccess: () => {
@@ -45,7 +43,6 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
       showSnackbar("ارسال شد.");
     },
     onError: (error) => {
-      console.log(error);
       showSnackbar(
         error.response?.data.message || "خطا در برقراری ارتباط",
         "error"
@@ -54,7 +51,6 @@ const SetPresenceDate = ({ open, onClose, mutation, customer }) => {
   });
 
   const onSend = (data) => {
-    console.log(data);
     const dateTime = dayjs(selectedDate)
       .hour(selectedTime.hour())
       .minute(selectedTime.minute())
