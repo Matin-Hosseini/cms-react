@@ -1,5 +1,6 @@
 import { lazy } from "react";
 
+const Home = lazy(() => import("./pages/Home"));
 const Customers = lazy(() => import("./pages/Customers"));
 const Login = lazy(() => import("./pages/login"));
 
@@ -80,7 +81,7 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      { path: "/", element: <Customers /> },
+      { path: "/", element: <Home /> },
       { path: "*", element: <NotFound /> },
     ],
   },
