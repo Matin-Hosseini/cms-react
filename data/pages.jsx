@@ -4,6 +4,7 @@ import { TbMessage2 } from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
 import { MdOutlineSwitchAccessShortcut } from "react-icons/md";
 import { AiOutlineCluster } from "react-icons/ai";
+import { PiOfficeChairFill } from "react-icons/pi";
 
 const pages = [
   {
@@ -33,6 +34,13 @@ const pages = [
     title: "کاربران",
     icon: <FiUsers />,
     permissionIDs: [16, 18, 19, 26],
+  },
+  {
+    id: 5,
+    route: "/tables",
+    title: "مدیریت صندلی ها",
+    icon: <PiOfficeChairFill />,
+    permissionIDs: [39, 40, 41],
   },
   // {
   //   id: 5,

@@ -12,6 +12,7 @@ const WithAuth = lazy(() => import("./HOCs/withPermission"));
 const DoesNotHaveAccess = lazy(() => import("./pages/DoesNotHaveAccess"));
 const Role = lazy(() => import("./pages/Role"));
 const Cup = lazy(() => import("./pages/Cup"));
+const Tables = lazy(() => import("./pages/Tables"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -50,6 +51,10 @@ const routes = [
             <Users />
           </DoesNotHaveAccess>
         ),
+      },
+      {
+        path: "/tables",
+        element: <Tables />,
       },
       // {
       //   path: "/permissions",
