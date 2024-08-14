@@ -15,20 +15,30 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { gregorianDateToJalali } from "../../../utils/funcs/gregorianToJalaali";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdCheckmark } from "react-icons/io";
 import SetPresenceDate from "./SetPresenceDate";
-import { myObj } from "../../Cup/Components/AddCupItem";
+import { setWinner } from "../../../services/requests/gaming";
+import { useSnackbar } from "../../../contexts/snackbar";
 
 const CustomerDetails = ({ open, customer, onClose }) => {
   const [dateDialog, setDateDialog] = useState(false);
 
+  const { showSnackbar } = useSnackbar();
+
   const token = Cookies.get("token");
   const mutation = useMutation({
     mutationFn: async (data) => await getCustomerGameDetails(data),
+  });
+  const setWinnerMutation = useMutation({
+    mutationFn: async (data) => await setWinner(data),
     onSuccess: (data) => {
-      console.log(data);
+      showSnackbar(
+        `${customer.firstName} ${customer.lastName} در ${data.result.titleGaming} به عنوان برنده اعلام شد.`
+      );
+    },
+    onError: (error) => {
+      console.log(error);
     },
   });
 
@@ -37,6 +47,10 @@ const CustomerDetails = ({ open, customer, onClose }) => {
       mutation.mutate({ token, customer_Id: customer.customer_ID });
     }
   }, [customer]);
+
+  const setWinnerHandler = (gamingID) => {
+    setWinnerMutation.mutate({ token, gamingID });
+  };
 
   return (
     <>
@@ -66,16 +80,33 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>بازی</TableCell>
+                      <TableCell>رده بندی</TableCell>
                       <TableCell>ساعت حضور</TableCell>
-                      <TableCell>برنده</TableCell>
                       <TableCell>زمان حضور</TableCell>
-                      <TableCell>وضعیت حضور</TableCell>
+                      <TableCell>برنده</TableCell>
+                      <TableCell>حضور به موقع</TableCell>
                       <TableCell>کد رهگیری</TableCell>
+                      {mutation.data?.result.games.map((game) => (
+                        <React.Fragment key={game.id}>
+                          {game.games ? (
+                            game.games.map((gameDetail) =>
+                              gameDetail.isPresentOnTime !== 0 ? (
+                                <TableCell key={gameDetail.game_ID}>
+                                  نتیجه
+                                </TableCell>
+                              ) : (
+                                <></>
+                              )
+                            )
+                          ) : (
+                            <></>
+                          )}
+                        </React.Fragment>
+                      ))}
                       <TableCell>توضیحات</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {console.log(mutation.data?.result)}
                     {mutation.data?.result.games.map((game) => (
                       <React.Fragment key={game.id}>
                         {game.games ? (
@@ -89,8 +120,12 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                               }}
                             >
                               <TableCell>{game.name}</TableCell>
+                              <TableCell>{gameDetail.titleItem}</TableCell>
                               <TableCell>
                                 {gameDetail.hourPresent || "وارد نشده"}
+                              </TableCell>
+                              <TableCell>
+                                {gameDetail.timePresent || "وارد نشده"}
                               </TableCell>
                               <TableCell>
                                 {gameDetail.isWinner ? (
@@ -99,9 +134,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                                   <RiCloseLargeFill className="text-red-600 text-xl" />
                                 )}
                               </TableCell>
-                              <TableCell>
-                                {gameDetail.timePresent || "وارد نشده"}
-                              </TableCell>
+
                               <TableCell>
                                 {gameDetail.isPresentOnTime === 0 ? (
                                   "مسابقه شروع نشده"
@@ -116,6 +149,20 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                               <TableCell>
                                 {gameDetail.trackingCode || "بدون کد رهگیری"}
                               </TableCell>
+                              {gameDetail.isPresentOnTime !== 0 ? (
+                                <TableCell>
+                                  <Button
+                                    disabled={!gameDetail.isWinner}
+                                    onClick={() =>
+                                      setWinnerHandler(gameDetail.game_ID)
+                                    }
+                                  >
+                                    اعلام به عنوان برنده
+                                  </Button>
+                                </TableCell>
+                              ) : (
+                                <></>
+                              )}
                               <TableCell>
                                 {gameDetail.message ? (
                                   <>
@@ -130,7 +177,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                                     />
                                   </>
                                 ) : (
-                                  "تاریخ و ساعت در نظر گرفته شده است."
+                                  "تاریخ و ساعت حضور در نظر گرفته شده است."
                                 )}
                               </TableCell>
                             </TableRow>
@@ -138,9 +185,10 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                         ) : (
                           <TableRow>
                             <TableCell>{game.name}</TableCell>
+                            <TableCell>وارد نشده</TableCell>
+                            <TableCell>درنظر گرفته نشده</TableCell>
                             <TableCell>درنظر گرفته نشده</TableCell>
                             <TableCell>نامشخص</TableCell>
-                            <TableCell>درنظر گرفته نشده</TableCell>
                             <TableCell>بازی شروع نشده</TableCell>
                             <TableCell>{game.trackingCode}</TableCell>
                             <TableCell>
@@ -159,7 +207,6 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                       </React.Fragment>
                     ))}
                   </TableBody>
-                  {console.log(mutation.data)}
                 </Table>
               </TableContainer>
             </>
