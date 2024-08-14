@@ -89,15 +89,15 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                       {mutation.data?.result.games.map((game) => (
                         <React.Fragment key={game.id}>
                           {game.games ? (
-                            game.games.map((gameDetail) =>
-                              gameDetail.isPresentOnTime !== 0 ? (
-                                <TableCell key={gameDetail.game_ID}>
-                                  نتیجه
-                                </TableCell>
-                              ) : (
-                                <></>
-                              )
-                            )
+                            game.games.map((gameDetail) => (
+                              <React.Fragment key={gameDetail.game_ID}>
+                                {gameDetail.isPresentOnTime !== 0 ? (
+                                  <TableCell>نتیجه</TableCell>
+                                ) : (
+                                  <></>
+                                )}
+                              </React.Fragment>
+                            ))
                           ) : (
                             <></>
                           )}
