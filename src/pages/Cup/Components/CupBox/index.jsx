@@ -37,11 +37,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import SubmitBtn from "../../../../components/SubmitBtn";
+import { getWinners } from "../../../../services/requests/gaming";
+import { RiEmotionSadLine } from "react-icons/ri";
 
 const CupBox = ({ title, description, id }) => {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [addCupItemDialog, setAddCupItemDialog] = useState(false);
   const [detailsDialog, setDetailsDialog] = useState(false);
+  const [winnersDialog, setWinnersDialog] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const cupMenu = Boolean(anchorEl);
@@ -83,7 +86,7 @@ const CupBox = ({ title, description, id }) => {
   const schema = z.object({
     titleItem: z
       .string()
-      .min(1, "لطفا عنوان رده بندی را وارد کنید.")
+      .min(1, "لطفا عنوان  را وارد کنید.")
       .min(3, "عنوان رده بندی باید حداقل 3 کاراکتر باشد.")
       .max(20, "عنوان رده بندی باید حداکثر 20 کاراکتر باشد."),
   });
@@ -122,6 +125,16 @@ const CupBox = ({ title, description, id }) => {
     setDetailsDialog(true);
 
     cupDetailsMutation.mutate({ token, typeOfRegister_ID: id });
+  };
+
+  const winnersMutation = useMutation({
+    mutationFn: async (data) => await getWinners(data),
+    onSuccess: (data) => {},
+  });
+  const winnersHandler = (itemId) => {
+    setWinnersDialog(true);
+
+    winnersMutation.mutate({ token, typeOfRegisterItem_ID: itemId });
   };
 
   return (
@@ -244,6 +257,7 @@ const CupBox = ({ title, description, id }) => {
               <TableHead>
                 <TableRow>
                   <TableCell>رده بندی ها</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -255,12 +269,72 @@ const CupBox = ({ title, description, id }) => {
                   cupDetailsMutation.data?.result.capItems.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>{item.title}</TableCell>
+                      <TableCell className="text-center">
+                        <Button onClick={() => winnersHandler(item.id)}>
+                          مشاهده برنده ها
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
           </TableContainer>
+
+          <Dialog
+            open={winnersDialog}
+            onClose={() => setWinnersDialog(false)}
+            fullWidth
+            maxWidth={"md"}
+            sx={{
+              "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
+            }}
+          >
+            <DialogHeader
+              title={`برندگان رده بندی`}
+              onClose={() => setWinnersDialog(false)}
+              belowMediaQuery={isBelowMd}
+            />
+            <DialogContent>
+              {!winnersMutation.data?.result ? (
+                <div className="h-full text-4xl flex items-center justify-center text-red-500">
+                  <div className="flex items-center gap-2">
+                    <RiEmotionSadLine /> برنده ای یافت نشد.
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <TableContainer component={Paper}>
+                    <Table
+                      sx={{ "& th, & td": { whiteSpace: "nowrap" } }}
+                      size="medium"
+                    >
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>نام</TableCell>
+                          <TableCell>نام خانوادگی</TableCell>
+                          <TableCell>موبایل</TableCell>
+                          <TableCell>کد ملی</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {winnersMutation.data?.result?.customersWinner.map(
+                          (winner) => (
+                            <TableRow key={winner.id}>
+                              <TableCell>{winner.firstName}</TableCell>
+                              <TableCell>{winner.lastName}</TableCell>
+                              <TableCell>{winner.phoneNumber}</TableCell>
+                              <TableCell>{winner.nationalCode}</TableCell>
+                            </TableRow>
+                          )
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
         </DialogContent>
       </Dialog>
     </>
