@@ -14,6 +14,7 @@ const DoesNotHaveAccess = lazy(() => import("./pages/DoesNotHaveAccess"));
 const Role = lazy(() => import("./pages/Role"));
 const Cup = lazy(() => import("./pages/Cup"));
 const Tables = lazy(() => import("./pages/Tables"));
+const CupDetails = lazy(() => import("./pages/Cup/Components/CupDetails"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -36,6 +37,7 @@ const routes = [
             <Cup />
           </DoesNotHaveAccess>
         ),
+        children: [{ path: ":cupId", element: <CupDetails /> }],
       },
       {
         path: "/sms",
