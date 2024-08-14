@@ -152,7 +152,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                               {gameDetail.isPresentOnTime !== 0 ? (
                                 <TableCell>
                                   <Button
-                                    disabled={!gameDetail.isWinner}
+                                    disabled={gameDetail.isWinner}
                                     onClick={() =>
                                       setWinnerHandler(gameDetail.game_ID)
                                     }
