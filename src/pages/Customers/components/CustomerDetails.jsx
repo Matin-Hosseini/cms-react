@@ -91,11 +91,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                           {game.games ? (
                             game.games.map((gameDetail) => (
                               <React.Fragment key={gameDetail.game_ID}>
-                                {gameDetail.isPresentOnTime !== 0 ? (
-                                  <TableCell>نتیجه</TableCell>
-                                ) : (
-                                  <></>
-                                )}
+                                <TableCell>نتیجه</TableCell>
                               </React.Fragment>
                             ))
                           ) : (
@@ -149,20 +145,18 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                               <TableCell>
                                 {gameDetail.trackingCode || "بدون کد رهگیری"}
                               </TableCell>
-                              {gameDetail.isPresentOnTime !== 0 ? (
-                                <TableCell>
-                                  <Button
-                                    disabled={gameDetail.isWinner}
-                                    onClick={() =>
-                                      setWinnerHandler(gameDetail.game_ID)
-                                    }
-                                  >
-                                    اعلام به عنوان برنده
-                                  </Button>
-                                </TableCell>
-                              ) : (
-                                <></>
-                              )}
+
+                              <TableCell>
+                                <Button
+                                  disabled={gameDetail.isWinner}
+                                  onClick={() =>
+                                    setWinnerHandler(gameDetail.game_ID)
+                                  }
+                                >
+                                  اعلام به عنوان برنده
+                                </Button>
+                              </TableCell>
+
                               <TableCell>
                                 {gameDetail.message ? (
                                   <>
