@@ -56,7 +56,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
     <>
       <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
         <DialogContent>
-          {mutation.isPending ? (
+          {mutation.isPending && (
             <>
               <div className="flex items-center gap-3">
                 <p>مشخصات</p>
@@ -65,12 +65,13 @@ const CustomerDetails = ({ open, customer, onClose }) => {
               </div>
               <Skeleton width={"100%"} height={80} />
             </>
-          ) : (
+          )}
+          {mutation.isSuccess && (
             <>
               {" "}
               <p className="mb-5">
                 مشخصات{" "}
-                {`${mutation.data?.result.firstName}  ${mutation.data?.result.lastName}`}
+                {`${mutation.data.result.firstName}  ${mutation.data.result.lastName}`}
               </p>
               <TableContainer component={Paper}>
                 <Table
@@ -86,7 +87,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                       <TableCell>برنده</TableCell>
                       <TableCell>حضور به موقع</TableCell>
                       <TableCell>کد رهگیری</TableCell>
-                      {mutation.data?.result.games.map((game) => (
+                      {mutation.data.result.games.map((game) => (
                         <React.Fragment key={game.id}>
                           {game.games ? (
                             game.games.map((gameDetail) => (
@@ -103,7 +104,7 @@ const CustomerDetails = ({ open, customer, onClose }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {mutation.data?.result.games.map((game) => (
+                    {mutation.data.result.games.map((game) => (
                       <React.Fragment key={game.id}>
                         {game.games ? (
                           game.games.map((gameDetail) => (
