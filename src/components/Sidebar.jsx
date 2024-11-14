@@ -11,6 +11,8 @@ import { BiCommentAdd } from "react-icons/bi";
 import { RiMailSendLine } from "react-icons/ri";
 import { useUserContext } from "../contexts/user";
 import SidebarLink from "./SideBarLink";
+import { IoCallSharp } from "react-icons/io5";
+import { BsCalculator } from "react-icons/bs";
 
 const menuItems = [];
 
@@ -47,6 +49,17 @@ const Sidebar = ({ isOpen, onClose }) => {
                 : userPages.map((page) => (
                     <SidebarLink key={page.id} {...page} />
                   ))}
+
+              <SidebarLink
+                route={"/call-center"}
+                title={"کال سنتر"}
+                icon={<IoCallSharp />}
+              />
+              <SidebarLink
+                route={"/calculator"}
+                title={"محاسبه گر وام"}
+                icon={<BsCalculator />}
+              />
             </ul>
           </div>
 

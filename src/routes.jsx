@@ -1,5 +1,4 @@
 import { lazy } from "react";
-
 const Home = lazy(() => import("./pages/Home"));
 const Customers = lazy(() => import("./pages/Customers"));
 const Login = lazy(() => import("./pages/login"));
@@ -15,6 +14,8 @@ const Role = lazy(() => import("./pages/Role"));
 const Cup = lazy(() => import("./pages/Cup"));
 const Tables = lazy(() => import("./pages/Tables"));
 const CupDetails = lazy(() => import("./pages/Cup/Components/CupDetails"));
+const CallCenter = lazy(() => import("./pages/CallCenter"));
+const Calculator = lazy(() => import("./pages/Calculator"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -82,6 +83,14 @@ const routes = [
             <IsProgressing />
           </DoesNotHaveAccess>
         ),
+      },
+      {
+        path: "/call-center",
+        element: <CallCenter />,
+      },
+      {
+        path: "/calculator",
+        element: <Calculator />,
       },
       { path: "/", element: <Home /> },
       { path: "*", element: <NotFound /> },

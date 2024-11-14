@@ -47,7 +47,7 @@ function App() {
 
           <div className="main-wrapper col-span-2 lg:col-start-2">
             <Header onSidebar={() => setIsSidebarOpen(true)} />
-            <main className="main">
+            <main className="main min-h-[calc(100dvh-104px)]">
               <div className="content">
                 <Suspense fallback={<GlobalLoading />}>{router}</Suspense>
               </div>
@@ -55,7 +55,6 @@ function App() {
           </div>
         </div>
       )}
-      
     </>
   );
 }
