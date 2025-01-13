@@ -50,11 +50,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                     <SidebarLink key={page.id} {...page} />
                   ))}
 
-              <SidebarLink
+              {/* <SidebarLink
                 route={"/call-center"}
                 title={"کال سنتر"}
                 icon={<IoCallSharp />}
-              />
+              /> */}
               <SidebarLink
                 route={"/calculator"}
                 title={"محاسبه گر وام"}

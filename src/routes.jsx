@@ -84,10 +84,10 @@ const routes = [
           </DoesNotHaveAccess>
         ),
       },
-      {
-        path: "/call-center",
-        element: <CallCenter />,
-      },
+      // {
+      //   path: "/call-center",
+      //   element: <CallCenter />,
+      // },
       {
         path: "/calculator",
         element: <Calculator />,

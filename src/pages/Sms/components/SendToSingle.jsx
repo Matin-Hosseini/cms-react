@@ -45,18 +45,19 @@ const SendToSingle = ({ disabled, messages }) => {
       queryClient.invalidateQueries("sent-messages");
       setValue("phoneNumber", "");
     },
-    onError: () => {
-      console.log("onError");
+    onError: (error) => {
+      console.log("onError", error);
       showSnackbar("خطا در ارسال اطلاعات", "error");
     },
   });
 
-  const submitHandler = async ({ phoneNumber, text }) => {
+  const submitHandler = async ({ text, phoneNumber }) => {
     const requestData = {
       token,
       text,
       phoneNumber,
     };
+    console.log(requestData);
 
     mutation.mutate(requestData);
   };

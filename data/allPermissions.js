@@ -107,6 +107,82 @@ const allPermissions = [
     permission_Id: 30,
     permission_Name: "RemoveTextMessage",
   },
+  {
+    permission_Id: 31,
+    permission_Name: "AddSetting",
+  },
+  {
+    permission_Id: 32,
+    permission_Name: "ShowAllCustmersGaming",
+  },
+  {
+    permission_Id: 33,
+    permission_Name: "AddCustmerGaming",
+  },
+  {
+    permission_Id: 34,
+    permission_Name: "ShowDetailCustmersGaming",
+  },
+  {
+    permission_Id: 35,
+    permission_Name: "AddNewTitleCapItem",
+  },
+  {
+    permission_Id: 36,
+    permission_Name: "GetNumberOfTableCustmersGaming",
+  },
+  {
+    permission_Id: 37,
+    permission_Name: "GetAllTitleCapItems",
+  },
+  {
+    permission_Id: 38,
+    permission_Name: "UpdateCustomer",
+  },
+  {
+    permission_Id: 39,
+    permission_Name: "GetAllPlaces",
+  },
+  {
+    permission_Id: 40,
+    permission_Name: "AddNewPlace",
+  },
+  {
+    permission_Id: 41,
+    permission_Name: "UpdatePlace",
+  },
+  {
+    permission_Id: 42,
+    permission_Name: "UpdateWinnerCustmersGaming",
+  },
+  {
+    permission_Id: 43,
+    permission_Name: "GetAllGamesItems",
+  },
+  {
+    permission_Id: 44,
+    permission_Name: "ShowAllCustomersWinner",
+  },
+  {
+    permission_Id: 45,
+    permission_Name: "ShowCallCenterCustomers",
+  },
+  {
+    permission_Id: 46,
+    permission_Name: "InsertCalculatorLoan",
+  },
+  {
+    permission_Id: 47,
+    permission_Name: "InsertNewGamingItemsToCustomers",
+  },
+  {
+    permission_Id: 48,
+    permission_Name: "GetAllCalculatorLoan",
+  },
+  {
+    permission_Id: 49,
+    permission_Name: "EditProfileUser",
+  },
 ];
 
 export default allPermissions;

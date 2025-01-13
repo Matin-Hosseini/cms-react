@@ -1,4 +1,3 @@
-import { ConstructionRounded } from "@mui/icons-material";
 import { useAuthContext } from "../contexts/auth";
 
 const WithPermission = (Component, componentPermissionId, ErrorComponent) => {

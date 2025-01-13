@@ -1,4 +1,14 @@
-import { Alert, Box, Button, Dialog, DialogContent } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import { useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -9,17 +19,26 @@ import DialogHeader from "../../../components/DialogHeader";
 import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import DataTable from "../../../components/DataTable";
-
-import { columns } from "../../../../data/tables/allSmsCategories";
+import { GoTrash } from "react-icons/go";
 import { useSnackbar } from "../../../contexts/snackbar";
-import { useQuery } from "@tanstack/react-query";
-import { getSmsCategories } from "../../../services/requests/sms";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getSmsCategories,
+  removeSmsCategory,
+} from "../../../services/requests/sms";
+import ThreeDotsLoading from "../../../components/ThreeDotLoading";
 
 const AllSmsCategories = () => {
   const [open, setOpen] = useState(false);
+  const [removeDialog, setRemoveDialog] = useState(false);
+  const [targetSmsCategory, setTargetSmsCategory] = useState(null);
 
   const theme = useTheme();
-  const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
+  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
+
+  const { showSnackbar } = useSnackbar();
+
+  const queryClient = useQueryClient();
 
   const token = Cookies.get("token");
 
@@ -27,6 +46,54 @@ const AllSmsCategories = () => {
     queryKey: ["sms-categories"],
     queryFn: async () => await getSmsCategories(token),
   });
+
+  const removeSmsCategoryMutation = useMutation({
+    mutationFn: async (data) => await removeSmsCategory(data),
+    onSuccess: (data) => {
+      showSnackbar(data.message);
+      queryClient.invalidateQueries(["sms-categories"]);
+      setRemoveDialog(false);
+    },
+    onError: () => {
+      showSnackbar("خطایی رخ داده است.");
+      setRemoveDialog(false);
+    },
+  });
+
+  const columns = [
+    { field: "title", headerName: "عنوان", width: 80, editable: true },
+    { field: "text", headerName: "متن پیام", width: 500, editable: true },
+    {
+      field: "description",
+      headerName: "توضیحات",
+      width: 100,
+      editable: true,
+    },
+    {
+      field: "actions",
+      headerName: "عملیات",
+      width: 100,
+      renderCell: (params) => {
+        const handleDelete = async () => {
+          setRemoveDialog(true);
+          setTargetSmsCategory(params.row);
+        };
+
+        return (
+          <IconButton color="error" onClick={handleDelete}>
+            <GoTrash />
+          </IconButton>
+        );
+      },
+    },
+  ];
+
+  const removeSmsCatgoryHandler = async () => {
+    removeSmsCategoryMutation.mutate({
+      token,
+      panelSms_ID: targetSmsCategory.message_ID,
+    });
+  };
 
   return (
     <div>
@@ -60,6 +127,31 @@ const AllSmsCategories = () => {
             />
           </Box>
         </DialogContent>
+      </Dialog>
+      <Dialog open={removeDialog} onClose={() => setRemoveDial(false)}>
+        <DialogTitle id="alert-dialog-title">حذف دسته بندی پیام</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            آیا از حذف دسته بندی مورد نظر اطمینان دارید؟
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={() => setRemoveDialog(false)}>
+            خیر
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={removeSmsCatgoryHandler}
+            sx={{ height: "37px" }}
+          >
+            {removeSmsCategoryMutation.isPending ? (
+              <ThreeDotsLoading color={"#fff"} />
+            ) : (
+              "بله"
+            )}
+          </Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

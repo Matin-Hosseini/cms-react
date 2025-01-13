@@ -14,3 +14,6 @@ export const sendListSmsToAnyOne = async (data) =>
 
 export const addSmsCategory = async (data) =>
   (await Api.post("/PanelSms/AddNewTextMessage", data)).data;
+
+export const removeSmsCategory = async (data) =>
+  (await Api.post("/PanelSms/RemoveTextMessage", data)).data;

@@ -19,13 +19,9 @@ import { useAuthContext } from "../contexts/auth";
 
 const Header = ({ onSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
 
   const { userInfo, isLoggedIn } = useAuthContext();
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -79,41 +75,6 @@ const Header = ({ onSidebar }) => {
           </FormControl>
 
           <div className="flex items-center gap-4">
-            <IconButton onClick={handleClick}>
-              <Badge
-                badgeContent={4}
-                color="error"
-                sx={{
-                  cursor: "pointer",
-                  "& .MuiBadge-badge": { right: "100%" },
-                }}
-                max={10}
-              >
-                <FaRegBell fontSize={25} />
-              </Badge>
-            </IconButton>
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-            >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>My account</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </Menu>
-
             <div className="flex items-center gap-2">
               <h2 className="hidden sm:block">{userInfo.userName}</h2>
               <Avatar src={ProfilePic} />

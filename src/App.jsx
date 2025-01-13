@@ -14,6 +14,7 @@ import GlobalLoading from "./components/GlobalLoading";
 import "./../data";
 import { useAuthContext } from "./contexts/auth";
 import Test from "./components/Test";
+import { LuShieldCheck } from "react-icons/lu";
 
 function App() {
   const [isSidbarOpen, setIsSidebarOpen] = useState(false);
