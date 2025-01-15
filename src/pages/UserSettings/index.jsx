@@ -52,6 +52,7 @@ export default function UserSettings() {
 
   return (
     <>
+      <h1 className="mb-8 text-3xl">ویرایش اطلاعات</h1>
       {isLoading ? (
         <div className="max-w-[600px] mx-auto">
           <UserInfoFormSkeleton />
