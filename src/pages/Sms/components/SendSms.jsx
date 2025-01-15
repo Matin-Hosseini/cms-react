@@ -18,6 +18,8 @@ import sendSmsIcon from "./../../../assets/icons/sms/send-sms.png";
 import PropTypes from "prop-types";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import DialogHeader from "../../../components/DialogHeader";
+import WithPermission from "../../../HOCs/withPermission";
+import WithHasPermission from "../../../HOCs/WithHasPermission";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -132,7 +134,9 @@ export default function SendSms() {
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-              <SendToSingle messages={messages} />
+              <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+                <SendToSingle messages={messages} />
+              </WithHasPermission>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <SendToMany messages={messages} />

@@ -16,6 +16,7 @@ const Tables = lazy(() => import("./pages/Tables"));
 const CupDetails = lazy(() => import("./pages/Cup/Components/CupDetails"));
 const CallCenter = lazy(() => import("./pages/CallCenter"));
 const Calculator = lazy(() => import("./pages/Calculator"));
+const UserSettings = lazy(() => import("./pages/UserSettings"));
 
 const routes = [
   { path: "/login", element: <Login /> },
@@ -23,23 +24,23 @@ const routes = [
     path: "",
     element: <ProtectedRoute />,
     children: [
-      {
-        path: "/customers",
-        element: (
-          <DoesNotHaveAccess>
-            <Customers />
-          </DoesNotHaveAccess>
-        ),
-      },
-      {
-        path: "/cup",
-        element: (
-          <DoesNotHaveAccess>
-            <Cup />
-          </DoesNotHaveAccess>
-        ),
-        children: [{ path: ":cupId", element: <CupDetails /> }],
-      },
+      // {
+      //   path: "/customers",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <Customers />
+      //     </DoesNotHaveAccess>
+      //   ),
+      // },
+      // {
+      //   path: "/cup",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <Cup />
+      //     </DoesNotHaveAccess>
+      //   ),
+      //   children: [{ path: ":cupId", element: <CupDetails /> }],
+      // },
       {
         path: "/sms",
         element: (
@@ -57,9 +58,17 @@ const routes = [
         ),
       },
       {
-        path: "/tables",
-        element: <Tables />,
+        path: "/user-settings",
+        element: (
+          // <DoesNotHaveAccess>
+          <UserSettings />
+          // </DoesNotHaveAccess>
+        ),
       },
+      // {
+      //   path: "/tables",
+      //   element: <Tables />,
+      // },
       // {
       //   path: "/permissions",
       //   element: (
@@ -68,22 +77,22 @@ const routes = [
       //     </DoesNotHaveAccess>
       //   ),
       // },
-      {
-        path: "/permissions",
-        element: (
-          <DoesNotHaveAccess>
-            <IsProgressing />
-          </DoesNotHaveAccess>
-        ),
-      },
-      {
-        path: "/roles",
-        element: (
-          <DoesNotHaveAccess>
-            <IsProgressing />
-          </DoesNotHaveAccess>
-        ),
-      },
+      // {
+      //   path: "/permissions",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <IsProgressing />
+      //     </DoesNotHaveAccess>
+      //   ),
+      // },
+      // {
+      //   path: "/roles",
+      //   element: (
+      //     <DoesNotHaveAccess>
+      //       <IsProgressing />
+      //     </DoesNotHaveAccess>
+      //   ),
+      // },
       // {
       //   path: "/call-center",
       //   element: <CallCenter />,
