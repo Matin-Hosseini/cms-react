@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  sendCallCenterSmsSchema,
   sendSMSSchema,
   sendSmsToAnyoneSchema,
 } from "../../../validations/schemas/panelSms";
@@ -12,15 +13,13 @@ import {
   TextField,
 } from "@mui/material";
 import SubmitBtn from "../../../components/SubmitBtn";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { phoneRegex } from "../../../utils/regexs";
 import { useSnackbar } from "../../../contexts/snackbar";
 import Cookies from "js-cookie";
-import Api from "../../../axios/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { sendSmsToAnyone } from "../../../services/requests/sms";
+import { sendCallCenterSms } from "../../../services/requests/sms";
 
 const SendToSingle = ({ disabled, messages }) => {
   const { showSnackbar } = useSnackbar();
@@ -33,17 +32,18 @@ const SendToSingle = ({ disabled, messages }) => {
     handleSubmit,
     setValue,
     control,
+    reset,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm({
-    resolver: zodResolver(sendSmsToAnyoneSchema),
+    resolver: zodResolver(sendCallCenterSmsSchema),
   });
 
   const mutation = useMutation({
-    mutationFn: async (data) => await sendSmsToAnyone(data),
+    mutationFn: async (data) => await sendCallCenterSms(data),
     onSuccess: async () => {
       showSnackbar("پیام ارسال شد.");
       queryClient.invalidateQueries("sent-messages");
-      setValue("phoneNumber", "");
+      reset();
     },
     onError: (error) => {
       console.log("onError", error);
@@ -51,13 +51,8 @@ const SendToSingle = ({ disabled, messages }) => {
     },
   });
 
-  const submitHandler = async ({ text, phoneNumber }) => {
-    const requestData = {
-      token,
-      text,
-      phoneNumber,
-    };
-    console.log(requestData);
+  const submitHandler = async (data) => {
+    const requestData = { token, ...data };
 
     mutation.mutate(requestData);
   };
@@ -67,24 +62,24 @@ const SendToSingle = ({ disabled, messages }) => {
       onSubmit={handleSubmit(submitHandler)}
       className="max-w-96 mx-auto mt-5"
     >
-      <FormControl fullWidth className="mb-3" error={!!errors.text}>
-        <InputLabel id="message-category">دسته بندی</InputLabel>
-        <Controller
-          name="text"
-          defaultValue=""
-          control={control}
-          render={({ field }) => (
-            <Select labelId="message-category" label="دسته بندی" {...field}>
-              {messages.map((message) => (
-                <MenuItem value={message.text} key={Math.random()}>
-                  {message.title}
-                </MenuItem>
-              ))}
-            </Select>
-          )}
-        />
-        <FormHelperText>{!!errors.text && errors.text.message}</FormHelperText>
-      </FormControl>
+      <TextField
+        fullWidth
+        className="mb-3"
+        id="firstName"
+        label="نام"
+        {...register("firstName")}
+        error={!!errors.firstName}
+        helperText={errors.firstName?.message}
+      />
+      <TextField
+        fullWidth
+        className="mb-3"
+        id="lastName"
+        label="نام خانوادگی"
+        {...register("lastName")}
+        error={!!errors.lastName}
+        helperText={errors.lastName?.message}
+      />
       <TextField
         fullWidth
         className="mb-3"

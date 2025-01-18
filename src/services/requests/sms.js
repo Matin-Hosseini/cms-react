@@ -17,3 +17,6 @@ export const addSmsCategory = async (data) =>
 
 export const removeSmsCategory = async (data) =>
   (await Api.post("/PanelSms/RemoveTextMessage", data)).data;
+
+export const sendCallCenterSms = async (data) =>
+  (await Api.post("/PanelSms/SendSmsForCallCenter", data)).data;
