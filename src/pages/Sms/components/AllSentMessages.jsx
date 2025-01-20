@@ -18,7 +18,8 @@ const AllSentMessages = () => {
   const columns = [
     { field: "phoneNumber", headerName: "شماره تلفن", width: 130 },
     { field: "whenSent", headerName: "تاریخ ارسال", width: 180 },
-    { field: "text", headerName: "متن پیام", width: 300 },
+    { field: "whoSent", headerName: "فرستنده", width: 150 },
+    { field: "text", headerName: "متن پیام", width: 500 },
   ];
 
   const { data, isFetching, isError, isPending, error, isLoading } = useQuery({

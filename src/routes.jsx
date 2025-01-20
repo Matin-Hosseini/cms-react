@@ -97,10 +97,10 @@ const routes = [
       //   path: "/call-center",
       //   element: <CallCenter />,
       // },
-      {
-        path: "/calculator",
-        element: <Calculator />,
-      },
+      // {
+      //   path: "/calculator",
+      //   element: <Calculator />,
+      // },
       { path: "/", element: <Home /> },
       { path: "*", element: <NotFound /> },
     ],

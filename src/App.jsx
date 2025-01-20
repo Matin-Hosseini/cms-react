@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 
 import routes from "./routes";
-import { useLocation, useRoutes } from "react-router-dom";
+import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 
 import ScrollToTop from "./components/ScrollToTop";
 import Login from "./pages/login";
@@ -22,12 +22,15 @@ function App() {
 
   const router = useRoutes(routes);
 
+  const navigate = useNavigate();
+
   const location = useLocation();
 
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.title = "پنل شطرنج";
+    document.title = "پنل ایران اورجینال";
+    navigate("/sms");
   }, []);
 
   useEffect(() => {

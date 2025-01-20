@@ -55,11 +55,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                 title={"کال سنتر"}
                 icon={<IoCallSharp />}
               /> */}
-              <SidebarLink
+              {/* <SidebarLink
                 route={"/calculator"}
                 title={"محاسبه گر وام"}
                 icon={<BsCalculator />}
-              />
+              /> */}
             </ul>
           </div>
 

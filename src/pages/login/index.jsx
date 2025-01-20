@@ -73,7 +73,8 @@ const Login = () => {
 
       showSnackbar("خوش آمدید.");
 
-      navigate(incomingPath || userPages[0].route, { replace: true });
+      // navigate(incomingPath || userPages[0].route, { replace: true });
+      navigate(incomingPath || "/sms", { replace: true });
     } catch (error) {
       if (error.response && error.response.status === 400) {
         showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.");

@@ -126,11 +126,11 @@ export default function SendSms() {
                 aria-label="basic tabs example"
               >
                 <Tab className="flex-1" label="ارسال تکی" {...a11yProps(0)} />
-                <Tab
+                {/* <Tab
                   className="flex-1"
                   label="ارسال چند تایی"
                   {...a11yProps(1)}
-                />
+                /> */}
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
@@ -138,9 +138,9 @@ export default function SendSms() {
                 <SendToSingle messages={messages} />
               </WithHasPermission>
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            {/* <CustomTabPanel value={value} index={1}>
               <SendToMany messages={messages} />
-            </CustomTabPanel>
+            </CustomTabPanel> */}
           </Box>
         </DialogContent>
       </Dialog>
