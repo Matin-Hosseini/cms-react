@@ -20,6 +20,7 @@ import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import DialogHeader from "../../../components/DialogHeader";
 import WithPermission from "../../../HOCs/withPermission";
 import WithHasPermission from "../../../HOCs/WithHasPermission";
+import SendCustomSms from "./SendCustomSms";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -82,10 +83,11 @@ export default function SendSms() {
 
       setMessages(res.data.result.messages);
     } catch (error) {
+      console.log(error);
       if (error.response && error.response.status === 401) {
-        showSnackbar("شما دسترسی به این قسمت ندارد.");
+        showSnackbar("شما دسترسی به این قسمت ندارید.");
       } else {
-        showSnackbar("خطا در برقراری ارتباط");
+        // showSnackbar("خطا در برقراری ارتباط");
       }
     }
   };
@@ -125,22 +127,30 @@ export default function SendSms() {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
-                <Tab className="flex-1" label="ارسال تکی" {...a11yProps(0)} />
-                {/* <Tab
+                <Tab
                   className="flex-1"
-                  label="ارسال چند تایی"
+                  label="ارسال پیام دلخواه"
+                  {...a11yProps(0)}
+                />
+
+                <Tab
+                  className="flex-1"
+                  label="ارسال پیام PDF فروش"
                   {...a11yProps(1)}
-                /> */}
+                />
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
+              <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                <SendCustomSms messages={messages} />
+              </WithHasPermission>
+            </CustomTabPanel>
+
+            <CustomTabPanel value={value} index={1}>
               <WithHasPermission permissionName={"SendSmsToAnyOne"}>
                 <SendToSingle messages={messages} />
               </WithHasPermission>
             </CustomTabPanel>
-            {/* <CustomTabPanel value={value} index={1}>
-              <SendToMany messages={messages} />
-            </CustomTabPanel> */}
           </Box>
         </DialogContent>
       </Dialog>

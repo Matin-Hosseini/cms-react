@@ -18,8 +18,8 @@ const Sms = () => {
     <div>
       <div className="grid md:grid-cols-3 gap-3 mb-4">
         <SendSmsWithPermission />
-        <AddSmsCategoryWithPermission />
-        <AllSmsCategoriesWithPermission />
+        {/* <AddSmsCategoryWithPermission /> */}
+        {/* <AllSmsCategoriesWithPermission /> */}
       </div>
       <SentMessagesWithPermission />
     </div>
