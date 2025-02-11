@@ -45,7 +45,8 @@ export default function AddSMSCategory() {
       queryClient.invalidateQueries(["sms-categories"]);
       reset();
     },
-    onError: () => {
+    onError: (error) => {
+      console.log(error);
       showSnackbar("خطا در ارسال اطلاعات.", "error");
     },
   });

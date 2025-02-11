@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import { useSnackbar } from "../../../contexts/snackbar";
-import SendToMany from "./SendToMany";
 import SendToSingle from "./SendToSingle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@emotion/react";
@@ -21,6 +20,7 @@ import DialogHeader from "../../../components/DialogHeader";
 import WithPermission from "../../../HOCs/withPermission";
 import WithHasPermission from "../../../HOCs/WithHasPermission";
 import SendCustomSms from "./SendCustomSms";
+import SendSmsWithCategory from "./SendSmsWithCategory";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -125,32 +125,53 @@ export default function SendSms() {
               <Tabs
                 value={value}
                 onChange={handleChange}
-                aria-label="basic tabs example"
+                aria-label="send-sms-tabs"
               >
-                <Tab
-                  className="flex-1"
-                  label="ارسال پیام دلخواه"
-                  {...a11yProps(0)}
-                />
+                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                  <Tab
+                    onClick={() => setValue(0)}
+                    className="flex-1"
+                    label="ارسال با دسته بندی"
+                    {...a11yProps(2)}
+                  />
+                </WithHasPermission>
+                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                  <Tab
+                    onClick={() => setValue(1)}
+                    className="flex-1"
+                    label="ارسال دلخواه"
+                    {...a11yProps(0)}
+                  />
+                </WithHasPermission>
 
-                <Tab
-                  className="flex-1"
-                  label="ارسال پیام PDF فروش"
-                  {...a11yProps(1)}
-                />
+                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                  <Tab
+                    onClick={() => setValue(2)}
+                    className="flex-1"
+                    label="ارسال PDF فروش"
+                    {...a11yProps(1)}
+                  />
+                </WithHasPermission>
               </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
-              <WithHasPermission permissionName={"SendSmsForCallCenter"}>
-                <SendCustomSms messages={messages} />
-              </WithHasPermission>
-            </CustomTabPanel>
 
-            <CustomTabPanel value={value} index={1}>
-              <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+            <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+              <CustomTabPanel value={value} index={0}>
+                <SendSmsWithCategory />
+              </CustomTabPanel>
+            </WithHasPermission>
+
+            <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+              <CustomTabPanel value={value} index={1}>
+                <SendCustomSms messages={messages} />
+              </CustomTabPanel>
+            </WithHasPermission>
+
+            <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+              <CustomTabPanel value={value} index={2}>
                 <SendToSingle messages={messages} />
-              </WithHasPermission>
-            </CustomTabPanel>
+              </CustomTabPanel>
+            </WithHasPermission>
           </Box>
         </DialogContent>
       </Dialog>

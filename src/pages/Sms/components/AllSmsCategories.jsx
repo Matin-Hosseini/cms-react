@@ -61,13 +61,13 @@ const AllSmsCategories = () => {
   });
 
   const columns = [
-    { field: "title", headerName: "عنوان", width: 80, editable: true },
-    { field: "text", headerName: "متن پیام", width: 500, editable: true },
+    { field: "title", headerName: "عنوان", width: 250, editable: false },
+    { field: "text", headerName: "متن پیام", width: 500, editable: false },
     {
       field: "description",
       headerName: "توضیحات",
-      width: 100,
-      editable: true,
+      width: 580,
+      editable: false,
     },
     {
       field: "actions",
@@ -108,7 +108,7 @@ const AllSmsCategories = () => {
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
-        maxWidth={"md"}
+        maxWidth={"xl"}
         sx={{
           "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
         }}
