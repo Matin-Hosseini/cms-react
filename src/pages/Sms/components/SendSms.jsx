@@ -79,7 +79,7 @@ export default function SendSms() {
         open={open}
         onClose={handleClose}
         fullWidth
-        maxWidth={"md"}
+        maxWidth={"sm"}
         sx={{
           "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
         }}
@@ -96,20 +96,20 @@ export default function SendSms() {
               <Tabs
                 value={value}
                 onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
                 aria-label="send-sms-tabs"
               >
-                {/* <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                <WithHasPermission permissionName={"SendSmsWithCategory"}>
                   <Tab
                     onClick={() => setValue(0)}
-                    className="flex-1"
                     label="ارسال با دسته بندی"
-                    {...a11yProps(2)}
+                    {...a11yProps(0)}
                   />
-                </WithHasPermission> */}
-                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                </WithHasPermission>
+                <WithHasPermission permissionName={"SendSmsToAnyOne"}>
                   <Tab
-                    onClick={() => setValue(0)}
-                    className="flex-1"
+                    onClick={() => setValue(1)}
                     label="ارسال دلخواه"
                     {...a11yProps(0)}
                   />
@@ -117,8 +117,7 @@ export default function SendSms() {
 
                 <WithHasPermission permissionName={"SendSmsForCallCenter"}>
                   <Tab
-                    onClick={() => setValue(1)}
-                    className="flex-1"
+                    onClick={() => setValue(2)}
                     label="ارسال PDF فروش"
                     {...a11yProps(1)}
                   />
@@ -126,20 +125,20 @@ export default function SendSms() {
               </Tabs>
             </Box>
 
-            {/* <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+            <WithHasPermission permissionName={"SendSmsWithCategory"}>
               <CustomTabPanel value={value} index={0}>
                 <SendSmsWithCategory />
-              </CustomTabPanel>
-            </WithHasPermission> */}
-
-            <WithHasPermission permissionName={"SendSmsForCallCenter"}>
-              <CustomTabPanel value={value} index={0}>
-                <SendCustomSms />
               </CustomTabPanel>
             </WithHasPermission>
 
             <WithHasPermission permissionName={"SendSmsToAnyOne"}>
               <CustomTabPanel value={value} index={1}>
+                <SendCustomSms />
+              </CustomTabPanel>
+            </WithHasPermission>
+
+            <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+              <CustomTabPanel value={value} index={2}>
                 <SendSalesPdfSms />
               </CustomTabPanel>
             </WithHasPermission>

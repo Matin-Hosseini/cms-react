@@ -20,3 +20,6 @@ export const removeSmsCategory = async (data) =>
 
 export const sendCallCenterSms = async (data) =>
   (await Api.post("/PanelSms/SendSmsForCallCenter", data)).data;
+
+export const sendSmsWithCategory = async (data) =>
+  (await Api.post("/PanelSms/SendSmsWithCategory", data)).data;

@@ -15,8 +15,7 @@ import {
 } from "@mui/material";
 import SubmitBtn from "../../../components/SubmitBtn";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { phoneRegex } from "../../../utils/regexs";
+import { useForm } from "react-hook-form";
 import { useSnackbar } from "../../../contexts/snackbar";
 import Cookies from "js-cookie";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -34,7 +33,7 @@ const SendSalesPdfSms = ({ disabled, messages }) => {
     setValue,
     control,
     reset,
-    formState: { errors, isSubmitting, isSubmitted },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(sendCallCenterSmsSchema),
   });

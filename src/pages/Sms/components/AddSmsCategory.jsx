@@ -45,8 +45,7 @@ export default function AddSMSCategory() {
       queryClient.invalidateQueries(["sms-categories"]);
       reset();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: () => {
       showSnackbar("خطا در ارسال اطلاعات.", "error");
     },
   });
@@ -68,7 +67,7 @@ export default function AddSMSCategory() {
         open={open}
         onClose={() => setOpen(false)}
         fullWidth
-        maxWidth={"md"}
+        maxWidth={"sm"}
         sx={{
           "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
         }}
@@ -83,7 +82,7 @@ export default function AddSMSCategory() {
             <form
               action="#"
               onSubmit={handleSubmit(submitHandler)}
-              className="max-w-96 mx-auto mt-5"
+              className="mt-5"
             >
               <TextField
                 fullWidth

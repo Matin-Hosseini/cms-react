@@ -44,3 +44,19 @@ export const sendCallCenterSmsSchema = z.object({
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
 });
+
+export const snedSmsWithCategory = z.object({
+  text: z
+    .string()
+    .min(1, "لطفا یک دسته بندی را انتخاب کنید.")
+    .refine((val) => val !== "-1", {
+      message: "لطفا یک دسته بندی را انتخاب کنید.",
+    }),
+  phoneNumber: z
+    .string()
+    .min(1, "لطفا شماره موبایل را وارد کنید.")
+    .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
+  clientFullName: z.string().min(1, "لطفا نام مشتری را وارد کنید."),
+  typeOfRequest: z.string(),
+  showUrl: z.boolean(),
+});
