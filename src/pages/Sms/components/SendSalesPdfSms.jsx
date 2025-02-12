@@ -5,6 +5,7 @@ import {
   sendSmsToAnyoneSchema,
 } from "../../../validations/schemas/panelSms";
 import {
+  Alert,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -21,7 +22,7 @@ import Cookies from "js-cookie";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { sendCallCenterSms } from "../../../services/requests/sms";
 
-const SendToSingle = ({ disabled, messages }) => {
+const SendSalesPdfSms = ({ disabled, messages }) => {
   const { showSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -57,44 +58,50 @@ const SendToSingle = ({ disabled, messages }) => {
     mutation.mutate(requestData);
   };
   return (
-    <form
-      action="#"
-      onSubmit={handleSubmit(submitHandler)}
-      className="max-w-96 mx-auto mt-5"
-    >
-      <TextField
-        fullWidth
-        className="mb-3"
-        id="firstName"
-        label="نام"
-        {...register("firstName")}
-        error={!!errors.firstName}
-        helperText={errors.firstName?.message}
-      />
-      <TextField
-        fullWidth
-        className="mb-3"
-        id="lastName"
-        label="نام خانوادگی"
-        {...register("lastName")}
-        error={!!errors.lastName}
-        helperText={errors.lastName?.message}
-      />
-      <TextField
-        fullWidth
-        className="mb-3"
-        id="phone"
-        label="شماره موبایل"
-        {...register("phoneNumber")}
-        error={!!errors.phoneNumber}
-        helperText={errors.phoneNumber?.message}
-      />
+    <>
+      <form
+        action="#"
+        onSubmit={handleSubmit(submitHandler)}
+        className="max-w mx-auto mt-5"
+      >
+        <TextField
+          fullWidth
+          className="mb-3"
+          id="firstName"
+          label="نام"
+          {...register("firstName")}
+          error={!!errors.firstName}
+          helperText={errors.firstName?.message}
+        />
+        <TextField
+          fullWidth
+          className="mb-3"
+          id="lastName"
+          label="نام خانوادگی"
+          {...register("lastName")}
+          error={!!errors.lastName}
+          helperText={errors.lastName?.message}
+        />
+        <TextField
+          fullWidth
+          className="mb-3"
+          id="phone"
+          label="شماره موبایل"
+          {...register("phoneNumber")}
+          error={!!errors.phoneNumber}
+          helperText={errors.phoneNumber?.message}
+        />
 
-      <SubmitBtn isSubmitting={mutation.isPending} disabled={disabled}>
-        ارسال
-      </SubmitBtn>
-    </form>
+        <SubmitBtn isSubmitting={mutation.isPending} disabled={true}>
+          ارسال
+        </SubmitBtn>
+      </form>
+      <Alert severity="warning" className="mt-10">
+        این بخش در حال توسعه بوده و پس از تکمیل فرایند امکان ارسال پیام فراهم
+        خواهد شد.
+      </Alert>
+    </>
   );
 };
 
-export default SendToSingle;
+export default SendSalesPdfSms;

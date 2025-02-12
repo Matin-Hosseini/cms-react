@@ -47,11 +47,7 @@ const SendCustomSms = ({ disabled, messages }) => {
     mutation.mutate(requestData);
   };
   return (
-    <form
-      action="#"
-      onSubmit={handleSubmit(submitHandler)}
-      className="max-w-96 mx-auto mt-5"
-    >
+    <form action="#" onSubmit={handleSubmit(submitHandler)} className="mt-5">
       <TextField
         fullWidth
         className="mb-3"

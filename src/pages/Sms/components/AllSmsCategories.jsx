@@ -27,6 +27,7 @@ import {
   removeSmsCategory,
 } from "../../../services/requests/sms";
 import ThreeDotsLoading from "../../../components/ThreeDotLoading";
+import WithHasPermission from "../../../HOCs/WithHasPermission";
 
 const AllSmsCategories = () => {
   const [open, setOpen] = useState(false);
@@ -50,11 +51,13 @@ const AllSmsCategories = () => {
   const removeSmsCategoryMutation = useMutation({
     mutationFn: async (data) => await removeSmsCategory(data),
     onSuccess: (data) => {
+      console.log("data", data);
       showSnackbar(data.message);
       queryClient.invalidateQueries(["sms-categories"]);
       setRemoveDialog(false);
     },
-    onError: () => {
+    onError: (error) => {
+      console.log("error", error);
       showSnackbar("خطایی رخ داده است.");
       setRemoveDialog(false);
     },
@@ -80,9 +83,11 @@ const AllSmsCategories = () => {
         };
 
         return (
-          <IconButton color="error" onClick={handleDelete}>
-            <GoTrash />
-          </IconButton>
+          <WithHasPermission permissionName={"RemoveTextMessage"}>
+            <IconButton color="error" onClick={handleDelete}>
+              <GoTrash />
+            </IconButton>
+          </WithHasPermission>
         );
       },
     },
@@ -122,13 +127,13 @@ const AllSmsCategories = () => {
           <Box sx={{ width: "100%" }}>
             <DataTable
               columns={columns}
-              rows={data?.result.messages || []}
+              rows={data?.result?.messages || []}
               custom_ID={"message_ID"}
             />
           </Box>
         </DialogContent>
       </Dialog>
-      <Dialog open={removeDialog} onClose={() => setRemoveDial(false)}>
+      <Dialog open={removeDialog} onClose={() => setRemoveDialog(false)}>
         <DialogTitle id="alert-dialog-title">حذف دسته بندی پیام</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

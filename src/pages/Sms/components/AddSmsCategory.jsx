@@ -52,7 +52,7 @@ export default function AddSMSCategory() {
   });
 
   const submitHandler = async (data) => {
-    mutation.mutate({ token, ...data });
+    mutation.mutate({ token, ...data, permissionClients: [0], typeOfSms: 0 });
   };
 
   return (

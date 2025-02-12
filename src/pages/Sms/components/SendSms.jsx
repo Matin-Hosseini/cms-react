@@ -1,26 +1,18 @@
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Box, Dialog, DialogContent, Tab, Tabs } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import { useSnackbar } from "../../../contexts/snackbar";
-import SendToSingle from "./SendToSingle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@emotion/react";
 import sendSmsIcon from "./../../../assets/icons/sms/send-sms.png";
 import PropTypes from "prop-types";
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import DialogHeader from "../../../components/DialogHeader";
-import WithPermission from "../../../HOCs/withPermission";
 import WithHasPermission from "../../../HOCs/WithHasPermission";
 import SendCustomSms from "./SendCustomSms";
 import SendSmsWithCategory from "./SendSmsWithCategory";
+import SendSalesPdfSms from "./SendSalesPdfSms";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,30 +63,9 @@ export default function SendSms() {
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [messages, setMessages] = useState([]);
-
   const token = Cookies.get("token");
 
   const { showSnackbar } = useSnackbar();
-
-  const getSmsCategories = async () => {
-    try {
-      const res = await Api.post("/PanelSms/GetAllTextMessage", { token });
-
-      setMessages(res.data.result.messages);
-    } catch (error) {
-      console.log(error);
-      if (error.response && error.response.status === 401) {
-        showSnackbar("شما دسترسی به این قسمت ندارید.");
-      } else {
-        // showSnackbar("خطا در برقراری ارتباط");
-      }
-    }
-  };
-
-  useEffect(() => {
-    getSmsCategories();
-  }, []);
 
   return (
     <div>
@@ -127,17 +98,17 @@ export default function SendSms() {
                 onChange={handleChange}
                 aria-label="send-sms-tabs"
               >
-                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                {/* <WithHasPermission permissionName={"SendSmsForCallCenter"}>
                   <Tab
                     onClick={() => setValue(0)}
                     className="flex-1"
                     label="ارسال با دسته بندی"
                     {...a11yProps(2)}
                   />
-                </WithHasPermission>
+                </WithHasPermission> */}
                 <WithHasPermission permissionName={"SendSmsForCallCenter"}>
                   <Tab
-                    onClick={() => setValue(1)}
+                    onClick={() => setValue(0)}
                     className="flex-1"
                     label="ارسال دلخواه"
                     {...a11yProps(0)}
@@ -146,7 +117,7 @@ export default function SendSms() {
 
                 <WithHasPermission permissionName={"SendSmsForCallCenter"}>
                   <Tab
-                    onClick={() => setValue(2)}
+                    onClick={() => setValue(1)}
                     className="flex-1"
                     label="ارسال PDF فروش"
                     {...a11yProps(1)}
@@ -155,21 +126,21 @@ export default function SendSms() {
               </Tabs>
             </Box>
 
-            <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+            {/* <WithHasPermission permissionName={"SendSmsToAnyOne"}>
               <CustomTabPanel value={value} index={0}>
                 <SendSmsWithCategory />
               </CustomTabPanel>
-            </WithHasPermission>
+            </WithHasPermission> */}
 
             <WithHasPermission permissionName={"SendSmsForCallCenter"}>
-              <CustomTabPanel value={value} index={1}>
-                <SendCustomSms messages={messages} />
+              <CustomTabPanel value={value} index={0}>
+                <SendCustomSms />
               </CustomTabPanel>
             </WithHasPermission>
 
             <WithHasPermission permissionName={"SendSmsToAnyOne"}>
-              <CustomTabPanel value={value} index={2}>
-                <SendToSingle messages={messages} />
+              <CustomTabPanel value={value} index={1}>
+                <SendSalesPdfSms />
               </CustomTabPanel>
             </WithHasPermission>
           </Box>

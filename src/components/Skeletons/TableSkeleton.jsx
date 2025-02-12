@@ -1,4 +1,4 @@
-import { Skeleton } from "@mui/material";
+import { ListItemButton, Skeleton } from "@mui/material";
 
 const TableSkeleton = () => {
   return (
@@ -18,7 +18,7 @@ const TableSkeleton = () => {
 
       <div className="flex items-center gap-3 justify-end">
         {[...Array(3).keys()].map((item) => (
-          <Skeleton width={80} height={40} animation="wave" />
+          <Skeleton key={item} width={80} height={40} animation="wave" />
         ))}
       </div>
     </div>
