@@ -93,6 +93,16 @@ export default function UserSettings() {
             error={!!errors.internalNumber}
             helperText={errors.internalNumber?.message}
           />
+          <TextField
+            fullWidth
+            defaultValue={data.result.unitWork}
+            className="mb-3"
+            id="unitWork"
+            label="واحد"
+            {...register("unitWork")}
+            error={!!errors.unitWork}
+            helperText={errors.unitWork?.message}
+          />
           <FormControl fullWidth className="mb-3" error={!!errors.gender}>
             <InputLabel id="gender">جنسیت</InputLabel>
             <Controller

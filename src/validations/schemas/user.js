@@ -37,6 +37,11 @@ export const userProfileInfoSchema = z.object({
     .min(1, "شماره داخلی الزامی می باشد.")
     .regex(/^\d+$/, "شماره داخلی نمی تواند غیر عدد باشد."),
 
+  unitWork: z
+    .string()
+    .min(1, "نام واحد الزامی می باشد.")
+    .regex(/^[^\w\d]+$/, "نام واحد نمی تواند شامل حروف انگلیسی باشد."),
+
   gender: z.string().refine((value) => value === "0" || value === "1", {
     message: "لطفا جنسیت خود را انتخاب کنید.",
   }),
