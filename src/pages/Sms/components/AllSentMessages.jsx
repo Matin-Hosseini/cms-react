@@ -25,6 +25,14 @@ const AllSentMessages = () => {
     queryFn: () => sentMessages(token),
   });
 
+  if (data) {
+    console.log(
+      data.result.postedSmsLogs.filter(
+        (item) => item.whoSent === "javad_yousefi"
+      )
+    );
+  }
+
   const messages = data?.result.postedSmsLogs.map((row) => ({
     ...row,
     whenSent: gregorianToJalaali(row.whenSent),

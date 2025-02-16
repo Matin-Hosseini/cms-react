@@ -36,6 +36,10 @@ export default function UserSettings() {
     queryFn: async () => await getUserProfile(token),
   });
 
+  if (data) {
+    console.log(data);
+  }
+
   const mutation = useMutation({
     mutationFn: async (data) => await editUserProfile(data),
     onSuccess: (data) => {

@@ -1,34 +1,43 @@
 import {
   Alert,
+  Checkbox,
   Chip,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SubmitBtn from "../../../components/SubmitBtn";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import { useSnackbar } from "../../../contexts/snackbar";
 import { CiViewList } from "react-icons/ci";
 import { TbFileSad } from "react-icons/tb";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { sendListSmsToAnyOne } from "../../../services/requests/sms";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getSmsCategories,
+  sendListSmsToAnyOne,
+} from "../../../services/requests/sms";
 import { sendListSmsToAnyOneSchema } from "../../../validations/schemas/panelSms";
+import { useAuthContext } from "../../../contexts/auth";
 
-export default function SendToMany({ disabled, messages }) {
-  console.log("inside the send to many");
+export default function SendToMany({ disabled }) {
   const [numbers, setNumbers] = useState([]);
   const [selectedValue, setSelectedValue] = useState("");
   const [selectBoxValue, setSelectBoxValue] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const token = Cookies.get("token");
+  const [showUrl, setShowUrl] = useState(true);
+  const [typeOfRequest, setTypeOfRequest] = useState("0");
 
   const { showSnackbar } = useSnackbar();
+
+  const { token } = useAuthContext();
 
   const queryClient = useQueryClient();
 
@@ -37,9 +46,15 @@ export default function SendToMany({ disabled, messages }) {
     handleSubmit,
     setValue,
     trigger,
+    control,
     getValues,
     formState: { errors },
   } = useForm({ resolver: zodResolver(sendListSmsToAnyOneSchema) });
+
+  const { data: categoriesResult, isFetching } = useQuery({
+    queryKey: ["sms-categories"],
+    queryFn: async () => await getSmsCategories(token),
+  });
 
   const mutation = useMutation({
     mutationFn: async (data) => await sendListSmsToAnyOne(data),
@@ -49,28 +64,33 @@ export default function SendToMany({ disabled, messages }) {
 
       setNumbers([]);
     },
-    onError: () => {
-      showSnackbar("خطا در برقراری ارتباط", "error");
+    onError: (error) => {
+      console.log(error);
+      showSnackbar(error.response.data.title, "error");
     },
   });
 
-  const submitHandler = async () => {
+  const submitHandler = async (data) => {
     setIsSubmitted(true);
+
+    if (!selectedValue) return;
 
     if (!numbers.length) {
       showSnackbar("لطفا ابتدا شماره های مدنظر را وارد کنید.", "error");
       return;
     }
-    if (!selectedValue) return;
-
     const phoneNumbers = [];
     numbers.forEach((item) => phoneNumbers.push(item?.phoneNumber));
 
-    mutation.mutate({
+    const mutationData = {
       token,
       phoneNumbers,
+      showUrl,
+      typeOfRequest: +typeOfRequest,
       text: selectedValue,
-    });
+    };
+
+    mutation.mutate(mutationData);
   };
 
   const handleDelete = (id) => {
@@ -84,7 +104,6 @@ export default function SendToMany({ disabled, messages }) {
     if (!isValid) return;
 
     const phoneNumber = value.split("/")[0];
-    console.log(phoneNumber);
     const newNumber = { id: crypto.randomUUID(), phoneNumber };
 
     setNumbers((prev) => [...prev, newNumber]);
@@ -115,17 +134,21 @@ export default function SendToMany({ disabled, messages }) {
           کاربر گرامی برای افزودن شماره مورد نظر بعد از وارد کردن شماره کافیست
           Enter بزنید تا شماره وارد شده به لیست شماره های درج شده ها افزوده شود
         </Alert>
-        <Alert severity="error">
+        <Alert severity="warning">
           دقت داشته باشید که تنها شماره هایی که در لیست شماره های درج شده قرار
           داشته باشند ارسال خواهد شد.
         </Alert>
       </div>
       <form
         action="#"
-        className="max-w-96 mx-auto mt-5 mb-10"
+        className=" mt-5 mb-10"
         onSubmit={handleSubmit(submitHandler)}
       >
-        <FormControl fullWidth className="mb-3">
+        <FormControl
+          fullWidth
+          className="mb-3"
+          error={isSubmitted && !selectedValue}
+        >
           <InputLabel id="message-category">دسته بندی</InputLabel>
           <Select
             labelId="message-category"
@@ -134,12 +157,10 @@ export default function SendToMany({ disabled, messages }) {
             label="دسته بندی"
             onChange={(e) => setSelectBoxValue(e.target.value)}
           >
-            {messages.map((message) => (
+            {categoriesResult?.result?.messages.map((message) => (
               <MenuItem
                 value={message.text}
-                onClick={() => {
-                  setSelectedValue(message.text);
-                }}
+                onClick={() => setSelectedValue(message.text)}
                 key={Math.random()}
               >
                 {message.title}
@@ -148,7 +169,7 @@ export default function SendToMany({ disabled, messages }) {
           </Select>
         </FormControl>
         {isSubmitted && !selectedValue && (
-          <span className="text-red-400 block mb-2 text-xs">
+          <span className="text-red-600 block mb-2 text-xs">
             لطفا یک دسته بندی را انتخاب کنید.
           </span>
         )}
@@ -167,7 +188,43 @@ export default function SendToMany({ disabled, messages }) {
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber?.message}
         />
+        <RadioGroup
+          defaultValue={typeOfRequest}
+          onChange={(e) => setTypeOfRequest(e.target.value)}
+          className="flex flex-row items-center gap-3 justify-items-start"
+        >
+          <FormControlLabel
+            value="0"
+            control={<Radio />}
+            label="ارسال کارشناس مربوطه"
+          />
+          <FormControlLabel
+            value="1"
+            control={<Radio />}
+            label="ارسال واحد مربوطه"
+          />
+        </RadioGroup>
 
+        {/* <Controller
+          name="showUrl"
+          control={control}
+          defaultValue={true}
+          render={({ field }) => (
+            <FormControlLabel
+              control={<Checkbox {...field} defaultChecked />}
+              label="ارسال لینک سایت"
+            />
+          )}
+        /> */}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={showUrl}
+              onChange={() => setShowUrl((prev) => !prev)}
+            />
+          }
+          label="ارسال لینک سایت"
+        />
         <SubmitBtn
           onClick={submitHandler}
           className="bg-purple-600"
@@ -196,6 +253,7 @@ export default function SendToMany({ disabled, messages }) {
               <li key={number.id}>
                 <Chip
                   label={number.phoneNumber}
+                  color="success"
                   onDelete={() => handleDelete(number.id)}
                 />
               </li>

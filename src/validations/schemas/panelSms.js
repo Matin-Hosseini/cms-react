@@ -20,6 +20,8 @@ export const sendSmsToAnyoneSchema = z.object({
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
   text: z.string(),
+  typeOfRequest: z.string(),
+  showUrl: z.boolean(),
 });
 
 export const sendListSmsToAnyOneSchema = z.object({
@@ -56,7 +58,7 @@ export const snedSmsWithCategory = z.object({
     .string()
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
-  clientFullName: z.string().min(1, "لطفا نام مشتری را وارد کنید."),
+  clientFullName: z.string(),
   typeOfRequest: z.string(),
   showUrl: z.boolean(),
 });

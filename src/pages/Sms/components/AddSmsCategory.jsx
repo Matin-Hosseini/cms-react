@@ -97,6 +97,8 @@ export default function AddSMSCategory() {
               <TextField
                 fullWidth
                 className="mb-3"
+                multiline
+                rows={15}
                 id="text"
                 label="متن پیام"
                 {...register("text")}

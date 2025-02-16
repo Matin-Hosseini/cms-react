@@ -153,10 +153,10 @@ const SendSmsWithCategory = () => {
       <Controller
         name="showUrl"
         control={control}
-        defaultValue={false}
+        defaultValue={true}
         render={({ field }) => (
           <FormControlLabel
-            control={<Checkbox {...field} />}
+            control={<Checkbox {...field} defaultChecked/>}
             label="ارسال لینک سایت"
           />
         )}

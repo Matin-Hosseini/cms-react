@@ -17,6 +17,10 @@ const Users = () => {
       }),
   });
 
+  if (data) {
+    console.log(data);
+  }
+
   const AddUserWithPermission = WithPermission(AddUser, 19);
   const UserInformationWithPermission = WithPermission(UserInformation, 18);
   const UsersWithPermission = WithPermission(DataTable, 26);
