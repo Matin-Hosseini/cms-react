@@ -85,17 +85,19 @@ const AllSmsCategories = () => {
 
         return (
           <>
-            <Button
-              onClick={() => {
-                setEditDialog(true);
-                setTargetSmsCategory(params.row);
-              }}
-              color="warning"
-              variant="text"
-              startIcon={<CiEdit />}
-            >
-              ویرایش
-            </Button>
+            <WithHasPermission permissionName={"EditTextMessage"}>
+              <Button
+                onClick={() => {
+                  setEditDialog(true);
+                  setTargetSmsCategory(params.row);
+                }}
+                color="warning"
+                variant="text"
+                startIcon={<CiEdit />}
+              >
+                ویرایش
+              </Button>
+            </WithHasPermission>
             <WithHasPermission permissionName={"RemoveTextMessage"}>
               <IconButton
                 color="error"
