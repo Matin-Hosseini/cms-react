@@ -29,7 +29,7 @@ import { useAuthContext } from "../../../contexts/auth";
 
 export default function SendToMany({ disabled }) {
   const [numbers, setNumbers] = useState([]);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState();
   const [selectBoxValue, setSelectBoxValue] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showUrl, setShowUrl] = useState(true);
@@ -65,7 +65,6 @@ export default function SendToMany({ disabled }) {
       setNumbers([]);
     },
     onError: (error) => {
-      console.log(error);
       showSnackbar(error.response.data.title, "error");
     },
   });
@@ -82,12 +81,16 @@ export default function SendToMany({ disabled }) {
     const phoneNumbers = [];
     numbers.forEach((item) => phoneNumbers.push(item?.phoneNumber));
 
+    const messageText = categoriesResult.result.messages.find(
+      (message) => selectBoxValue === message.message_ID
+    ).text;
+
     const mutationData = {
       token,
       phoneNumbers,
       showUrl,
       typeOfRequest: +typeOfRequest,
-      text: selectedValue,
+      text: messageText,
     };
 
     mutation.mutate(mutationData);
@@ -159,9 +162,9 @@ export default function SendToMany({ disabled }) {
           >
             {categoriesResult?.result?.messages.map((message) => (
               <MenuItem
-                value={message.text}
-                onClick={() => setSelectedValue(message.text)}
-                key={Math.random()}
+                value={message.message_ID}
+                onClick={() => setSelectedValue(message.message_ID)}
+                key={message.message_ID}
               >
                 {message.title}
               </MenuItem>

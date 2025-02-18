@@ -57,12 +57,24 @@ const SendSmsWithCategory = () => {
       (category) => category.message_ID === +data.text
     ).text;
 
+    const number = "۰۹۱۲۹۳۲۳۵۴۱";
+
+    function convertPersianToEnglishNumbers(text) {
+      return text.replace(/[۰-۹]/g, (d) =>
+        String.fromCharCode(d.charCodeAt(0) - 1728)
+      );
+    }
+
+    // console.log(convertPersianToEnglishNumbers(data.phoneNumber));
+
     const mutationData = {
       ...data,
       token,
       typeOfRequest: +data.typeOfRequest,
       text: categoryText,
     };
+
+    // console.log(mutationData);
 
     mutation.mutate(mutationData);
   };
@@ -156,7 +168,7 @@ const SendSmsWithCategory = () => {
         defaultValue={true}
         render={({ field }) => (
           <FormControlLabel
-            control={<Checkbox {...field} defaultChecked/>}
+            control={<Checkbox {...field} defaultChecked />}
             label="ارسال لینک سایت"
           />
         )}
