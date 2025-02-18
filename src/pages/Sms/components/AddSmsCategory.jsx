@@ -1,22 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Dialog, DialogContent, TextField } from "@mui/material";
-import { useForm } from "react-hook-form";
-import Api from "../../../axios/api";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import SubmitBtn from "../../../components/SubmitBtn";
 import addSmsCategoryIcon from "./../../../assets/icons/sms/add-category.png";
 
-import { addSMSCategorySchema } from "../../../validations/schemas/panelSms";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { useTheme } from "@emotion/react";
 
 import CategoryBtnBox from "../../../components/CategoryBtnBox";
 import DialogHeader from "../../../components/DialogHeader";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addSmsCategory } from "../../../services/requests/sms";
-import { useSnackbar } from "../../../contexts/snackbar";
+import SmsCategoryForm from "./SmsCategoryForm";
 
 const token = Cookies.get("token");
 
@@ -25,34 +18,6 @@ export default function AddSMSCategory() {
 
   const theme = useTheme();
   const isBelowMd = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const { showSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(addSMSCategorySchema),
-  });
-
-  const mutation = useMutation({
-    mutationFn: async (data) => await addSmsCategory(data),
-    onSuccess: (_, variables) => {
-      showSnackbar(`دسته بندی ${variables.title} افزوده شد.`);
-      queryClient.invalidateQueries(["sms-categories"]);
-      reset();
-    },
-    onError: () => {
-      showSnackbar("خطا در ارسال اطلاعات.", "error");
-    },
-  });
-
-  const submitHandler = async (data) => {
-    mutation.mutate({ token, ...data, permissionClients: [0], typeOfSms: 0 });
-  };
 
   return (
     <div>
@@ -79,50 +44,7 @@ export default function AddSMSCategory() {
         />
         <DialogContent>
           <Box className="w-full">
-            <form
-              action="#"
-              onSubmit={handleSubmit(submitHandler)}
-              className="mt-5"
-            >
-              <TextField
-                fullWidth
-                className="mb-3"
-                id="title"
-                label="عنوان"
-                {...register("title")}
-                error={!!errors.title}
-                helperText={errors.title?.message}
-              />
-
-              <TextField
-                fullWidth
-                className="mb-3"
-                multiline
-                rows={15}
-                id="text"
-                label="متن پیام"
-                {...register("text")}
-                error={!!errors.text}
-                helperText={errors.text?.message}
-              />
-
-              <TextField
-                fullWidth
-                className="mb-3"
-                id="description"
-                label="توضیحات"
-                {...register("description")}
-                error={!!errors.description}
-                helperText={errors.description?.message}
-              />
-
-              <SubmitBtn
-                isSubmitting={mutation.isPending}
-                className="bg-orange-500"
-              >
-                ثبت
-              </SubmitBtn>
-            </form>
+            <SmsCategoryForm />
           </Box>
         </DialogContent>
       </Dialog>

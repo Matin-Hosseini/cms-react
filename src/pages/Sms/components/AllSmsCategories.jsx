@@ -28,9 +28,13 @@ import {
 } from "../../../services/requests/sms";
 import ThreeDotsLoading from "../../../components/ThreeDotLoading";
 import WithHasPermission from "../../../HOCs/WithHasPermission";
+import { CiEdit } from "react-icons/ci";
+import AddSMSCategory from "./AddSmsCategory";
+import SmsCategoryForm from "./SmsCategoryForm";
 
 const AllSmsCategories = () => {
   const [open, setOpen] = useState(false);
+  const [editDialog, setEditDialog] = useState(false);
   const [removeDialog, setRemoveDialog] = useState(false);
   const [targetSmsCategory, setTargetSmsCategory] = useState(null);
 
@@ -69,25 +73,41 @@ const AllSmsCategories = () => {
     {
       field: "description",
       headerName: "توضیحات",
-      width: 580,
+      width: 200,
       editable: false,
     },
     {
       field: "actions",
       headerName: "عملیات",
-      width: 100,
+      width: 200,
       renderCell: (params) => {
-        const handleDelete = async () => {
-          setRemoveDialog(true);
-          setTargetSmsCategory(params.row);
-        };
+        const handleDelete = async () => {};
 
         return (
-          <WithHasPermission permissionName={"RemoveTextMessage"}>
-            <IconButton color="error" onClick={handleDelete}>
-              <GoTrash />
-            </IconButton>
-          </WithHasPermission>
+          <>
+            <Button
+              onClick={() => {
+                setEditDialog(true);
+                setTargetSmsCategory(params.row);
+              }}
+              color="warning"
+              variant="text"
+              startIcon={<CiEdit />}
+            >
+              ویرایش
+            </Button>
+            <WithHasPermission permissionName={"RemoveTextMessage"}>
+              <IconButton
+                color="error"
+                onClick={() => {
+                  setRemoveDialog(true);
+                  setTargetSmsCategory(params.row);
+                }}
+              >
+                <GoTrash />
+              </IconButton>
+            </WithHasPermission>
+          </>
         );
       },
     },
@@ -157,6 +177,30 @@ const AllSmsCategories = () => {
             )}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={editDialog}
+        onClose={() => setEditDialog(false)}
+        maxWidth={"sm"}
+      >
+        <DialogHeader
+          title={"ویرایش دسته بندی پیام"}
+          onClose={() => setEditDialog(false)}
+          belowMediaQuery={isBelowMd}
+        />
+
+        <DialogContent>
+          <SmsCategoryForm defaultSmsCategory={targetSmsCategory} />
+          <Button
+            sx={{ mt: "0.75rem" }}
+            fullWidth
+            color="primary"
+            onClick={() => setEditDialog(false)}
+          >
+            انصراف
+          </Button>
+        </DialogContent>
       </Dialog>
     </div>
   );
