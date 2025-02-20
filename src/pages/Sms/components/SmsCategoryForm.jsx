@@ -83,7 +83,7 @@ const SmsCategoryForm = ({ defaultSmsCategory }) => {
         defaultValue={defaultSmsCategory?.text || ""}
         className="mb-3"
         multiline
-        rows={15}
+        rows={10}
         id="text"
         label="متن پیام"
         {...register("text")}

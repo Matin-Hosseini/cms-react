@@ -28,26 +28,36 @@ const SendCustomSms = ({ disabled, messages }) => {
     mutationFn: async (data) => await sendSmsToAnyone(data),
     onSuccess: async (data) => {
       showSnackbar("پیام ارسال شد.");
-      console.log(data);
       queryClient.invalidateQueries("sent-messages");
       reset();
     },
     onError: (error) => {
-      console.log("onError", error);
-      showSnackbar("خطا در ارسال اطلاعات", "error");
+      showSnackbar(
+        error.response.data?.message ||
+          error.response.data?.title ||
+          "خطا در ارسال اطلاعات",
+        "error"
+      );
     },
   });
 
-  const submitHandler = async ({ text, phoneNumber }) => {
+  const formSubmitHandler = async ({ text, phoneNumber }) => {
     const requestData = {
       token,
       text,
       phoneNumber,
+      typeOfRequest: 0,
+      showUrl: true,
     };
+
     mutation.mutate(requestData);
   };
   return (
-    <form action="#" onSubmit={handleSubmit(submitHandler)} className="mt-5">
+    <form
+      action="#"
+      onSubmit={handleSubmit(formSubmitHandler)}
+      className="mt-5"
+    >
       <TextField
         fullWidth
         className="mb-3"
@@ -69,7 +79,11 @@ const SendCustomSms = ({ disabled, messages }) => {
         helperText={errors.text?.message}
       />
 
-      <SubmitBtn isSubmitting={mutation.isPending} disabled={disabled}>
+      <SubmitBtn
+        isSubmitting={mutation.isPending}
+        disabled={mutation.isPending}
+        type="submit"
+      >
         ارسال
       </SubmitBtn>
     </form>

@@ -48,7 +48,12 @@ const SendSmsWithCategory = () => {
       reset();
     },
     onError: (error) => {
-      showSnackbar(error.response.data.title, "error");
+      showSnackbar(
+        error?.response?.data?.title ||
+          error?.response?.data?.message ||
+          "خطا در ارسال اطلاعات",
+        "error"
+      );
     },
   });
 
@@ -65,7 +70,6 @@ const SendSmsWithCategory = () => {
       );
     }
 
-    // console.log(convertPersianToEnglishNumbers(data.phoneNumber));
 
     const mutationData = {
       ...data,
@@ -74,7 +78,6 @@ const SendSmsWithCategory = () => {
       text: categoryText,
     };
 
-    // console.log(mutationData);
 
     mutation.mutate(mutationData);
   };

@@ -2,8 +2,14 @@ import { z } from "zod";
 import { phoneRegex } from "../../utils/regexs";
 
 export const addSMSCategorySchema = z.object({
-  title: z.string().min(1, "لطفا عنوان را وارد کنید."),
-  text: z.string().min(1, "لطفا متن پیام را وارد کنید."),
+  title: z
+    .string()
+    .min(1, "لطفا عنوان را وارد کنید.")
+    .max(15, "عنوان نمی تواند بیشتر از 15 کاراکتر باشد."),
+  text: z
+    .string()
+    .min(1, "لطفا متن پیام را وارد کنید.")
+    .max(2000, "متن پیام نمی تواند بیشتر از 1000 کاراکتر باشد."),
   description: z.string().min(1, "لطفا توضیحات را وارد کنید."),
 });
 
@@ -19,9 +25,12 @@ export const sendSmsToAnyoneSchema = z.object({
     .string()
     .min(1, "لطفا شماره موبایل را وارد کنید.")
     .regex(phoneRegex, "شماره موبایل نامعتبر می باشد."),
-  text: z.string(),
-  typeOfRequest: z.string(),
-  showUrl: z.boolean(),
+  text: z
+    .string()
+    .min(1, "متن پیام را وارد کنید.")
+    .max(500, "متن پیام بیشتر از 500 کاراکتر نمی تواند باشد."),
+  // typeOfRequest: z.string(),
+  // showUrl: z.boolean(),
 });
 
 export const sendListSmsToAnyOneSchema = z.object({

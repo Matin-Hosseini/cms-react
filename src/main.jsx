@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </MuiProvider>
         </UserProvider>
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </BrowserRouter>
 );
