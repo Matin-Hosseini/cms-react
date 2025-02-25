@@ -15,6 +15,7 @@ import "./../data";
 import { useAuthContext } from "./contexts/auth";
 import Test from "./components/Test";
 import { LuShieldCheck } from "react-icons/lu";
+import { MdAddShoppingCart } from "react-icons/md";
 
 function App() {
   const [isSidbarOpen, setIsSidebarOpen] = useState(false);
@@ -39,6 +40,7 @@ function App() {
 
   return (
     <>
+      <MdAddShoppingCart />
       <ScrollToTop />
       {pathname === "/login" ? (
         <Login />

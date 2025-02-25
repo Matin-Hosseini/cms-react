@@ -6,6 +6,7 @@ import UserInformation from "./components/UserInformation";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "../../services/requests/users";
 import WithPermission from "../../HOCs/withPermission";
+import Accessability from "./components/Accessability";
 
 const Users = () => {
   const { data } = useQuery({
@@ -17,10 +18,6 @@ const Users = () => {
       }),
   });
 
-  if (data) {
-    console.log(data);
-  }
-
   const AddUserWithPermission = WithPermission(AddUser, 19);
   const UserInformationWithPermission = WithPermission(UserInformation, 18);
   const UsersWithPermission = WithPermission(DataTable, 26);
@@ -31,6 +28,8 @@ const Users = () => {
         <AddUserWithPermission />
         <UserInformationWithPermission />
       </div>
+
+      <Accessability />
 
       <UsersWithPermission
         columns={columns}

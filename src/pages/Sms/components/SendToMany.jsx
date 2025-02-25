@@ -26,8 +26,10 @@ import {
 } from "../../../services/requests/sms";
 import { sendListSmsToAnyOneSchema } from "../../../validations/schemas/panelSms";
 import { useAuthContext } from "../../../contexts/auth";
+import { number } from "prop-types";
 
 export default function SendToMany({ disabled }) {
+  const [maxNumbers, setMaxNumbers] = useState(50);
   const [numbers, setNumbers] = useState([]);
   const [selectedValue, setSelectedValue] = useState();
   const [selectBoxValue, setSelectBoxValue] = useState("");
@@ -102,6 +104,7 @@ export default function SendToMany({ disabled }) {
 
   const addNumber = async (value) => {
     if (!value.includes("/")) return;
+    console.log("is running");
 
     const isValid = await trigger("phoneNumber");
     if (!isValid) return;
@@ -125,6 +128,15 @@ export default function SendToMany({ disabled }) {
 
       const newNumber = { id: crypto.randomUUID(), phoneNumber };
 
+      if (numbers.length === maxNumbers) {
+        showSnackbar(
+          `تعداد شماره های ارسالی نمی تواند بیشتر از ${maxNumbers} تا باشد.`,
+          "error"
+        );
+
+        return;
+      }
+
       setNumbers((prev) => [...prev, newNumber]);
       setValue("phoneNumber", "");
     }
@@ -140,6 +152,9 @@ export default function SendToMany({ disabled }) {
         <Alert severity="warning">
           دقت داشته باشید که تنها شماره هایی که در لیست شماره های درج شده قرار
           داشته باشند ارسال خواهد شد.
+        </Alert>
+        <Alert severity="error">
+          شما حداکثر {maxNumbers} پیام به صروت همزمان می توانید ارسال کنید.
         </Alert>
       </div>
       <form
@@ -184,9 +199,9 @@ export default function SendToMany({ disabled }) {
           id="phone"
           label="شماره موبایل"
           {...register("phoneNumber", {
-            onChange: (e) => {
-              addNumber(e.target.value);
-            },
+            // onChange: (e) => {
+            //   addNumber(e.target.value);
+            // },
           })}
           error={!!errors.phoneNumber}
           helperText={errors.phoneNumber?.message}
@@ -242,7 +257,7 @@ export default function SendToMany({ disabled }) {
       <div>
         <div className="flex items-center gap-2 text-blue-600">
           <CiViewList className="text-2xl" />
-          <h2>شماره های درج شده:</h2>
+          <h2>شماره های درج شده: {numbers.length}</h2>
         </div>
 
         <ul className="flex justify-center gap-3 flex-wrap my-10">
@@ -252,15 +267,17 @@ export default function SendToMany({ disabled }) {
               <h3>هنوز شماره ای درج نکرده اید</h3>
             </div>
           ) : (
-            numbers.map((number) => (
-              <li key={number.id}>
-                <Chip
-                  label={number.phoneNumber}
-                  color="success"
-                  onDelete={() => handleDelete(number.id)}
-                />
-              </li>
-            ))
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+              {numbers.map((number) => (
+                <li key={number.id}>
+                  <Chip
+                    label={number.phoneNumber}
+                    color="success"
+                    onDelete={() => handleDelete(number.id)}
+                  />
+                </li>
+              ))}
+            </div>
           )}
         </ul>
       </div>
