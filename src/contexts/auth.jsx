@@ -7,8 +7,9 @@ export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
   const [token, setToken] = useState("");
+
+  const [userInfo, setUserInfo] = useState({});
 
   const login = (userData, token) => {
     setUserInfo(userData);
@@ -26,36 +27,35 @@ const AuthProvider = ({ children }) => {
         token,
       });
 
-      console.log(res);
-
       setIsLoggedIn(true);
       setUserInfo(res.data.result);
       setToken(token);
 
       return res.data;
     } catch (error) {
+      console.log(error);
       setIsLoggedIn(false);
       navigate("/login");
     }
   };
 
   useEffect(() => {
-    if (!storedToken) return navigate("/login");
-
-    getUserPermissions(storedToken);
+    storedToken ? setToken(storedToken) : navigate("/login");
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
+        setIsLoggedIn,
+        token,
+        setToken,
         userInfo,
         login,
         getUserPermissions,
-        token,
-        setToken,
       }}
     >
+      {!storedToken && <Navigate to={"/login"} />}
       {children}
     </AuthContext.Provider>
   );

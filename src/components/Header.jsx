@@ -5,22 +5,16 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Menu,
-  MenuItem,
   OutlinedInput,
-  TextField,
 } from "@mui/material";
 import { CiMenuFries } from "react-icons/ci";
 import { IoIosSearch } from "react-icons/io";
-import ProfilePic from "./../assets/images/profile.webp";
-import { FaRegBell } from "react-icons/fa6";
 import { useState } from "react";
-import { useAuthContext } from "../contexts/auth";
-import { Link } from "react-router-dom";
-import { PiGearSixLight } from "react-icons/pi";
+import { useUserContext } from "../contexts/user";
+import UserProfile from "./UserProfile";
 
 const Header = ({ onSidebar }) => {
-  const { userInfo, isLoggedIn } = useAuthContext();
+  const { userInfo } = useUserContext();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -35,8 +29,9 @@ const Header = ({ onSidebar }) => {
         <IconButton className="ml-4 lg:hidden " onClick={onSidebar}>
           <CiMenuFries />
         </IconButton>
-        <div className="flex items-center justify-between w-full">
+        <div className="flex  items-center justify-between w-full">
           <FormControl
+            className="hidden"
             sx={{
               m: 1,
               "& .MuiInputBase-root": { paddingLeft: "16px" },
@@ -78,34 +73,13 @@ const Header = ({ onSidebar }) => {
             />
           </FormControl>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="hidden sm:block">{userInfo.userName}</h2>
-              <Avatar
-                src={ProfilePic}
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-                sx={{ cursor: "pointer" }}
-              />
+          <p className="text-sm">
+            <span className="text-lg">{userInfo.userName}</span> عزیز، به سامانه
+            پیامکی ایران اورجینال خوش اومدی!
+          </p>
 
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={() => setAnchorEl(null)}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <Link
-                  onClick={() => setAnchorEl(null)}
-                  to={"/user-settings"}
-                  className="flex items-center justify-start gap-2 pl-16 pr-3 py-2 hover:bg-blue-100 text-blue-600 "
-                >
-                  <PiGearSixLight />
-                  تنظیمات
-                </Link>
-              </Menu>
-            </div>
+          <div className="hidden lg:block">
+            <UserProfile />
           </div>
         </div>
       </div>

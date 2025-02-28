@@ -1,9 +1,10 @@
 import { useAuthContext } from "../contexts/auth";
+import { useUserContext } from "../contexts/user";
 
 const WithPermission = (Component, componentPermissionId, ErrorComponent) => {
   const {
     userInfo: { permissions },
-  } = useAuthContext();
+  } = useUserContext();
 
   const permissionIDs = permissions.map(
     (permission) => permission.permission_Id

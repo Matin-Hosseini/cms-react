@@ -1,6 +1,7 @@
 import removeDuplicateObjectsFromArray from "./funcs/removeDuplicatedObjectsFromArray";
 
 const createUserPages = (userPermissions, allPages) => {
+  console.log(userPermissions);
   const userPermissionIDs = userPermissions.map(
     (permission) => permission.permission_Id
   );

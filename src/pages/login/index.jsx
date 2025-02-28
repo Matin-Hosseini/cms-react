@@ -41,7 +41,7 @@ const loginFormControlStyles = {
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { getUserInfo, setToken } = useAuthContext();
+  const { getUserPermissions, setToken } = useAuthContext();
 
   const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ const Login = () => {
       const token = res.data.result;
       Cookies.set("token", token, { expires: 1, path: "" });
 
-      const userInfo = await getUserInfo(token);
+      const userInfo = await getUserPermissions(token);
 
       const userPages = createUserPages(userInfo.result.permissions, pages);
 
@@ -79,6 +79,7 @@ const Login = () => {
       if (error.response && error.response.status === 400) {
         showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.");
       } else {
+        console.log(error);
         showSnackbar("خطا در برقراری ارتباط.");
       }
     }

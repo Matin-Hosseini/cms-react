@@ -1,4 +1,4 @@
-import { Button, IconButton, Skeleton } from "@mui/material";
+import { Avatar, Button, IconButton, Skeleton } from "@mui/material";
 import Logo from "./Logo";
 import { Link, useLocation } from "react-router-dom";
 // import { usePathname } from "next/navigation";
@@ -13,6 +13,7 @@ import { useUserContext } from "../contexts/user";
 import SidebarLink from "./SideBarLink";
 import { IoCallSharp } from "react-icons/io5";
 import { BsCalculator } from "react-icons/bs";
+import UserProfile from "./UserProfile";
 
 const menuItems = [];
 
@@ -29,7 +30,12 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex justify-between lg:justify-center items-center mb-10">
-              <Logo />
+              <div className="hidden lg:block">
+                <Logo />
+              </div>
+              <div className="lg:hidden">
+                <UserProfile />
+              </div>
               <IconButton className="lg:hidden" onClick={() => onClose()}>
                 <IoMdClose />
               </IconButton>
@@ -49,17 +55,6 @@ const Sidebar = ({ isOpen, onClose }) => {
                 : userPages.map((page) => (
                     <SidebarLink key={page.id} {...page} />
                   ))}
-
-              {/* <SidebarLink
-                route={"/call-center"}
-                title={"کال سنتر"}
-                icon={<IoCallSharp />}
-              /> */}
-              {/* <SidebarLink
-                route={"/calculator"}
-                title={"محاسبه گر وام"}
-                icon={<BsCalculator />}
-              /> */}
             </ul>
           </div>
 

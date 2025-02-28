@@ -1,9 +1,9 @@
-import { useAuthContext } from "../contexts/auth";
+import { useUserContext } from "../contexts/user";
 
 export default function WithHasPermission({ permissionName, children }) {
   const {
     userInfo: { permissions },
-  } = useAuthContext();
+  } = useUserContext();
 
   const hasAccess = permissions.some(
     (permission) => permission.permission_Name === permissionName

@@ -154,7 +154,7 @@ export default function SendToMany({ disabled }) {
           داشته باشند ارسال خواهد شد.
         </Alert>
         <Alert severity="error">
-          شما حداکثر {maxNumbers} پیام به صروت همزمان می توانید ارسال کنید.
+          شما حداکثر {maxNumbers} پیام به صورت همزمان می توانید ارسال کنید.
         </Alert>
       </div>
       <form
