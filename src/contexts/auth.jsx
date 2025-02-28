@@ -6,7 +6,7 @@ import Api from "./../axios/api";
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [token, setToken] = useState("");
 
@@ -20,11 +20,13 @@ const AuthProvider = ({ children }) => {
 
   const storedToken = Cookies.get("token");
 
-  const getUserInfo = async (token) => {
+  const getUserPermissions = async (token) => {
     try {
       const res = await Api.post("/Permission/GetPermissionsUserByUser", {
         token,
       });
+
+      console.log(res);
 
       setIsLoggedIn(true);
       setUserInfo(res.data.result);
@@ -40,12 +42,19 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!storedToken) return navigate("/login");
 
-    getUserInfo(storedToken);
+    getUserPermissions(storedToken);
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, userInfo, login, getUserInfo, token, setToken }}
+      value={{
+        isLoggedIn,
+        userInfo,
+        login,
+        getUserPermissions,
+        token,
+        setToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

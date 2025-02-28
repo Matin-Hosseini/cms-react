@@ -9,13 +9,10 @@ import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 
 import ScrollToTop from "./components/ScrollToTop";
 import Login from "./pages/login";
-import favicon from "./assets/images/logo/favicon.webp";
 import GlobalLoading from "./components/GlobalLoading";
 import "./../data";
 import { useAuthContext } from "./contexts/auth";
-import Test from "./components/Test";
-import { LuShieldCheck } from "react-icons/lu";
-import { MdAddShoppingCart } from "react-icons/md";
+// import DatePickerTest from "./components/DatePickerTest";
 
 function App() {
   const [isSidbarOpen, setIsSidebarOpen] = useState(false);
@@ -31,7 +28,7 @@ function App() {
 
   useEffect(() => {
     document.title = "پنل ایران اورجینال";
-    navigate("/sms");
+    // navigate("/sms");
   }, []);
 
   useEffect(() => {
@@ -40,7 +37,6 @@ function App() {
 
   return (
     <>
-      <MdAddShoppingCart />
       <ScrollToTop />
       {pathname === "/login" ? (
         <Login />
@@ -61,6 +57,7 @@ function App() {
           </div>
         </div>
       )}
+      {/* <DatePickerTest /> */}
     </>
   );
 }
