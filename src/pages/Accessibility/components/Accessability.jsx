@@ -1,62 +1,55 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllRoles } from "../../../services/requests/role";
 import { useAuthContext } from "../../../contexts/auth";
 import DataTable from "../../../components/DataTable";
 import { IoAccessibilitySharp } from "react-icons/io5";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogContent,
-  useMediaQuery,
-} from "@mui/material";
-import DialogHeader from "../../../components/DialogHeader";
-import { useTheme } from "@emotion/react";
+import { Button } from "@mui/material";
 
 import { useState } from "react";
+import UserAccessibilityDialog from "./UserAccessibilityDialog";
 
 export default function Accessability() {
-  const [open, setOpen] = useState(false);
+  const [showUserAccessibility, setShowUserAccessibility] = useState(false);
+  const [roleRow, setRoleRow] = useState();
 
   const { token } = useAuthContext();
-
-  const theme = useTheme();
-  const isBelowMd = useMediaQuery(theme.breakpoints.down("md"));
 
   const { data } = useQuery({
     queryKey: ["roles"],
     queryFn: async () => await getAllRoles(token),
   });
 
-  if (data) {
-    console.log(data);
-  }
-
   const columns = [
     { field: "id", headerName: "شناسه", width: 80 },
     { field: "name", headerName: "نقش", width: 150 },
-    { field: "description", headerName: "توضیحات", width: 400 },
+    { field: "description", headerName: "توضیحات", width: 250 },
     {
       field: "actions",
       headerName: "عملیات",
       width: 200,
       renderCell: (params) => {
-        const handleDelete = async () => {};
-
         return (
           <>
             <Button
               color="info"
               startIcon={<IoAccessibilitySharp />}
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setRoleRow(params.row);
+                setShowUserAccessibility(true);
+              }}
             >
-              دسترسی ها
+              مدیریت دسترسی
             </Button>
           </>
         );
       },
     },
   ];
+
+  const getRolePermissionsMutation = useMutation({
+    mutationKey: ["role-permissions"],
+    mutationFn: async () => getRolePermissions({ token, roleID: role.id }),
+  });
 
   return (
     <>
@@ -68,26 +61,12 @@ export default function Accessability() {
             custom_ID={"id"}
           />
         )}
-      </div>
-      <Dialog
-        fullScreen={isBelowMd}
-        open={open}
-        onClose={() => setOpen(false)}
-        fullWidth
-        maxWidth={"xl"}
-        sx={{
-          "& .MuiDialog-container .MuiPaper-root": { height: "100%" },
-        }}
-      >
-        <DialogHeader
-          title={"دسته بندی های پیامک"}
-          onClose={() => setOpen(false)}
-          belowMediaQuery={isBelowMd}
+        <UserAccessibilityDialog
+          open={showUserAccessibility}
+          onClose={() => setShowUserAccessibility(false)}
+          role={roleRow}
         />
-        <DialogContent>
-          <Box sx={{ width: "100%" }}></Box>
-        </DialogContent>
-      </Dialog>
+      </div>
     </>
   );
 }

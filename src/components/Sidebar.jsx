@@ -1,26 +1,13 @@
-import { Avatar, Button, IconButton, Skeleton } from "@mui/material";
+import { IconButton, Skeleton } from "@mui/material";
 import Logo from "./Logo";
-import { Link, useLocation } from "react-router-dom";
-// import { usePathname } from "next/navigation";
-import { PiUsers } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
-import { CiLogout } from "react-icons/ci";
-import NavLink from "./NavLink";
 import LogoutBtn from "./LogoutBtn";
-import { BiCommentAdd } from "react-icons/bi";
-import { RiMailSendLine } from "react-icons/ri";
 import { useUserContext } from "../contexts/user";
 import SidebarLink from "./SideBarLink";
-import { IoCallSharp } from "react-icons/io5";
-import { BsCalculator } from "react-icons/bs";
 import UserProfile from "./UserProfile";
 
-const menuItems = [];
-
 const Sidebar = ({ isOpen, onClose }) => {
-  const { pathname } = useLocation();
-
-  const { userPages } = useUserContext();
+  const { userPages, isGettingUserInfo } = useUserContext();
 
   return (
     <aside
@@ -42,7 +29,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
 
             <ul>
-              {userPages.length === 0
+              {userPages.length && isGettingUserInfo === 0
                 ? Array.from(Array(6).keys()).map((item) => (
                     <Skeleton
                       key={item}

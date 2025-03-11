@@ -22,12 +22,12 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/auth";
 import { loginSchema } from "../../validations/schemas/user";
-import Api from "../../axios/api";
 import { useSnackbar } from "../../contexts/snackbar";
 import SubmitBtn from "../../components/SubmitBtn";
 import { incomingPath } from "../../utils/ProtectedRoute";
-import createUserPages from "../../utils/createUserPages";
-import pages from "../../../data/pages";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { login } from "../../services/requests/auth";
 
 const loginFormControlStyles = {
   width: "100%",
@@ -41,7 +41,9 @@ const loginFormControlStyles = {
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { getUserPermissions, setToken } = useAuthContext();
+  const authContext = useAuthContext();
+
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
@@ -50,39 +52,38 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLogin = async ({ userName, password, remember_me }) => {
-    try {
-      const res = await Api.post("/Account/GetToken", {
-        userName,
-        password,
-      });
-
-      const token = res.data.result;
-      Cookies.set("token", token, { expires: 1, path: "" });
-
-      const userInfo = await getUserPermissions(token);
-
-      const userPages = createUserPages(userInfo.result.permissions, pages);
-
-      setToken(token);
-
-      showSnackbar("خوش آمدید.");
-
-      // navigate(incomingPath || userPages[0].route, { replace: true });
+  const loginMutation = useMutation({
+    mutationKey: ["login"],
+    mutationFn: async (data) => await login(data),
+    onSuccess: (data) => {
+      Cookies.set("token", data.data.result, { expires: 1, path: "" });
+      authContext.setToken(data.data.result);
+      authContext.setIsLoggedIn(true);
       navigate(incomingPath || "/sms", { replace: true });
-    } catch (error) {
+      showSnackbar(
+        "ورود با موفقیت انجام شد. در حال انتقال به صفحه مورد نظر..."
+      );
+
+      queryClient.resetQueries({ queryKey: ["user-info"] });
+    },
+    onError: (error) => {
       if (error.response && error.response.status === 400) {
-        showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.");
+        showSnackbar("نام کاربری یا رمز عبور اشتباه می باشد.", "error");
       } else {
-        console.log(error);
-        showSnackbar("خطا در برقراری ارتباط.");
+        showSnackbar(
+          error.response.data.result || error.response.data.message || "خطا"
+        );
       }
-    }
+    },
+  });
+
+  const handleLogin = async ({ userName, password, remember_me }) => {
+    loginMutation.mutate({ userName, password });
   };
 
   return (
@@ -162,7 +163,7 @@ const Login = () => {
           />
         </FormGroup>
 
-        <SubmitBtn isSubmitting={isSubmitting}>ورود</SubmitBtn>
+        <SubmitBtn isSubmitting={loginMutation.isPending}>ورود</SubmitBtn>
       </form>
     </div>
   );

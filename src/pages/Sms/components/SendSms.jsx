@@ -102,21 +102,21 @@ export default function SendSms() {
                 scrollButtons="auto"
                 aria-label="send-sms-tabs"
               >
-                <WithHasPermission permissionName={"SendSmsWithCategory"}>
+                <WithHasPermission permissions={["SendSmsWithCategory"]}>
                   <Tab
                     onClick={() => setValue(0)}
                     label="ارسال با دسته بندی"
                     {...a11yProps(0)}
                   />
                 </WithHasPermission>
-                <WithHasPermission permissionName={"SendSmsWithCategory"}>
+                <WithHasPermission permissions={["SendSmsWithCategory"]}>
                   <Tab
                     onClick={() => setValue(1)}
                     label="ارسال چند تایی با دسته بندی"
                     {...a11yProps(1)}
                   />
                 </WithHasPermission>
-                <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+                <WithHasPermission permissions={["SendSmsToAnyOne"]}>
                   <Tab
                     onClick={() => setValue(2)}
                     label="ارسال دلخواه"
@@ -124,7 +124,7 @@ export default function SendSms() {
                   />
                 </WithHasPermission>
 
-                <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+                <WithHasPermission permissions={["SendSmsForCallCenter"]}>
                   <Tab
                     onClick={() => setValue(3)}
                     label="ارسال PDF فروش"
@@ -134,25 +134,25 @@ export default function SendSms() {
               </Tabs>
             </Box>
 
-            <WithHasPermission permissionName={"SendSmsWithCategory"}>
+            <WithHasPermission permissions={["SendSmsWithCategory"]}>
               <CustomTabPanel value={value} index={0}>
                 <SendSmsWithCategory />
               </CustomTabPanel>
             </WithHasPermission>
 
-            <WithHasPermission permissionName={"SendListSmsToAnyOne"}>
+            <WithHasPermission permissions={["SendListSmsToAnyOne"]}>
               <CustomTabPanel value={value} index={1}>
                 <SendToMany />
               </CustomTabPanel>
             </WithHasPermission>
 
-            <WithHasPermission permissionName={"SendSmsToAnyOne"}>
+            <WithHasPermission permissions={["SendSmsToAnyOne"]}>
               <CustomTabPanel value={value} index={2}>
                 <SendCustomSms />
               </CustomTabPanel>
             </WithHasPermission>
 
-            <WithHasPermission permissionName={"SendSmsForCallCenter"}>
+            <WithHasPermission permissions={["SendSmsForCallCenter"]}>
               <CustomTabPanel value={value} index={3}>
                 <SendSalesPdfSms />
               </CustomTabPanel>

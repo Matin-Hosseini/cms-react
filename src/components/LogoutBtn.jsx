@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 // import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LogoutBtn = () => {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);

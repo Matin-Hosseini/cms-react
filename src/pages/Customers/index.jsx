@@ -26,11 +26,11 @@ export default function Home() {
 
   return (
     <>
-      <WithHasPermission permissionName={"AddNewCustomer"}>
+      <WithHasPermission permissions={["AddNewCustomer"]}>
         <AddNewCustomer />
       </WithHasPermission>
 
-      <WithHasPermission permissionName={"GetAllCustomers"}>
+      <WithHasPermission permissions={["GetAllCustomers"]}>
         <Table customers={customers || []} />
       </WithHasPermission>
     </>

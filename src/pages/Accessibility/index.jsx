@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "../../services/requests/users";
 import WithPermission from "../../HOCs/withPermission";
 import Accessability from "./components/Accessability";
+import WithHasPermission from "../../HOCs/WithHasPermission";
 
 const Users = () => {
   const { data } = useQuery({
@@ -18,14 +19,15 @@ const Users = () => {
       }),
   });
 
-  const AddUserWithPermission = WithPermission(AddUser, 19);
   const UserInformationWithPermission = WithPermission(UserInformation, 18);
   const UsersWithPermission = WithPermission(DataTable, 26);
 
   return (
     <div>
       <div className="grid sm:grid-cols-2 gap-3 mb-4">
-        <AddUserWithPermission />
+        <WithHasPermission permissions={["AddUser"]} permissionName={"AddUser"}>
+          <AddUser />
+        </WithHasPermission>
         <UserInformationWithPermission />
       </div>
 

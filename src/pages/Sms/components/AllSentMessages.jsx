@@ -10,12 +10,12 @@ import { sentMessages } from "../../../services/requests/sms";
 import TableSkeleton from "../../../components/Skeletons/TableSkeleton";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import AllSentMessagesTable from "./AllSentMessagesTable";
+import { useAuthContext } from "../../../contexts/auth";
 
 const AllSentMessages = () => {
-  const [allMessages, setAllMessages] = useState([]);
-  const token = Cookies.get("token");
+  const { token } = useAuthContext();
 
-  const { data, isError, isPending, error, isSuccess } = useQuery({
+  const { data, isLoading, isError, isPending, error, isSuccess } = useQuery({
     queryKey: ["sent-messages"],
     queryFn: () => sentMessages(token),
   });

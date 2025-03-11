@@ -2,19 +2,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 import pages from "../../data/pages";
 import createUserPages from "../utils/createUserPages";
 import { useAuthContext } from "./auth";
-
 import { useMutation } from "@tanstack/react-query";
 import { getUserInfo } from "../services/requests/user";
 import { Navigate, useNavigate } from "react-router-dom";
-import GlobalLoading from "../components/GlobalLoading";
 
-export const UserContext = createContext(null);
+const UserContext = createContext(null);
 
 const UserProvider = ({ children }) => {
   const [userPages, setUserPages] = useState([]);
   const [userInfo, setUserInfo] = useState({});
 
   const authContext = useAuthContext();
+  const navigate = useNavigate();
 
   const getUserInfoMutation = useMutation({
     mutationKey: ["user-info"],
@@ -22,26 +21,31 @@ const UserProvider = ({ children }) => {
     onSuccess: (data) => {
       setUserInfo(data.data.result);
       authContext.setIsLoggedIn(true);
+
+      const createdPages = createUserPages(data.data.result.permissions, pages);
+      setUserPages(createdPages);
+    },
+    onError: () => {
+      authContext.setIsLoggedIn(false);
+      navigate("/login");
     },
   });
 
   useEffect(() => {
-    if (authContext.token && !getUserInfoMutation.isError) {
+    if (authContext.token && Object.keys(userInfo).length === 0) {
       getUserInfoMutation.mutate(authContext.token);
-    }
-
-    if (authContext.isLoggedIn) {
-      console.log(userInfo);
-      const createdPages = createUserPages(userInfo.permissions, pages);
-
-      setUserPages(createdPages);
     }
   }, [authContext]);
 
   return (
-    <UserContext.Provider value={{ userPages, userInfo }}>
+    <UserContext.Provider
+      value={{
+        userPages,
+        userInfo,
+        isGettingUserInfo: getUserInfoMutation.isPending,
+      }}
+    >
       {getUserInfoMutation.isError && <Navigate to={"/login"} />}
-      {getUserInfoMutation.isPaused && <GlobalLoading />}
       {children}
     </UserContext.Provider>
   );

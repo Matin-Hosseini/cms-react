@@ -1,13 +1,17 @@
 import { useUserContext } from "../contexts/user";
 
-export default function WithHasPermission({ permissionName, children }) {
+export default function WithHasPermission({ permissions, children }) {
   const {
-    userInfo: { permissions },
+    userInfo: { permissions: userPermissions },
   } = useUserContext();
 
-  const hasAccess = permissions.some(
-    (permission) => permission.permission_Name === permissionName
+  const userPermissionStrings = userPermissions.map(
+    (perm) => perm.permission_Name
   );
 
-  return <>{hasAccess && children}</>;
+  const hasAllPermissions = permissions.every((perm) =>
+    userPermissionStrings.includes(perm)
+  );
+
+  return <>{hasAllPermissions && children}</>;
 }

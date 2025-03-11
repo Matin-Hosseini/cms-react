@@ -85,7 +85,7 @@ const AllSmsCategories = () => {
 
         return (
           <>
-            <WithHasPermission permissionName={"EditTextMessage"}>
+            <WithHasPermission permissions={["EditTextMessage"]}>
               <Button
                 onClick={() => {
                   setEditDialog(true);
@@ -98,7 +98,7 @@ const AllSmsCategories = () => {
                 ویرایش
               </Button>
             </WithHasPermission>
-            <WithHasPermission permissionName={"RemoveTextMessage"}>
+            <WithHasPermission permissions={["RemoveTextMessage"]}>
               <IconButton
                 color="error"
                 onClick={() => {

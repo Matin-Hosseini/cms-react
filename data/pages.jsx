@@ -1,10 +1,8 @@
 import { PiUsersThreeLight } from "react-icons/pi";
 import { GiTrophyCup } from "react-icons/gi";
 import { TbMessage2 } from "react-icons/tb";
-import { FiUsers } from "react-icons/fi";
-import { MdOutlineSwitchAccessShortcut } from "react-icons/md";
-import { AiOutlineCluster } from "react-icons/ai";
 import { PiOfficeChairFill } from "react-icons/pi";
+import { IoAccessibilitySharp } from "react-icons/io5";
 
 const pages = [
   {
@@ -12,50 +10,49 @@ const pages = [
     route: "/customers",
     title: "مشتریان",
     icon: <PiUsersThreeLight />,
-    permissionIDs: [9, 10, 15, 25],
+    permissions: [],
   },
   {
     id: 2,
     route: "/cup",
     title: "کاپ",
     icon: <GiTrophyCup />,
-    permissionIDs: [12, 13, 14],
+    permissions: [],
   },
   {
     id: 3,
     route: "/sms",
     title: "پیامک ها",
     icon: <TbMessage2 />,
-    permissionIDs: [22, 23, 24, 27, 28, 29, 30],
+    permissions: [
+      "SendSmsToAnyOne",
+      "AddNewTextMessage",
+      "GetAllTextMessage",
+      "RemoveCustomer",
+      "SendListSmsToAnyOne",
+      "RemoveAllPostedSmsLog",
+      "ShowAllPostedSmsLog",
+      "RemoveTextMessage",
+      "SendSmsForCallCenter",
+      "SendSmsWithCategory",
+      "Can See All Log SMS",
+      "EditTextMessage",
+    ],
   },
   {
     id: 4,
-    route: "/users",
-    title: "کاربران",
-    icon: <FiUsers />,
-    permissionIDs: [16, 18, 19, 26],
+    route: "/accessibility",
+    title: "سطح دسترسی",
+    icon: <IoAccessibilitySharp />,
+    permissions: ["GetAllUsers", "GetRole", "EditRole", "GetPermissionsRole"],
   },
   {
     id: 5,
     route: "/tables",
     title: "مدیریت صندلی ها",
     icon: <PiOfficeChairFill />,
-    permissionIDs: [39, 40, 41],
+    permissions: [],
   },
-  // {
-  //   id: 5,
-  //   route: "/permissions",
-  //   title: "دسترسی ها",
-  //   icon: <MdOutlineSwitchAccessShortcut />,
-  //   permissionIDs: [1, 2, 3, 16, 17],
-  // },
-  // {
-  //   id: 6,
-  //   route: "/roles",
-  //   title: "نقش ها",
-  //   icon: <AiOutlineCluster />,
-  //   permissionIDs: [4, 5, 6, 17],
-  // },
 ];
 
 export default pages;

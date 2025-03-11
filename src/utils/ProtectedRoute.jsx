@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 export let incomingPath = null;
 
 export default function ProtectedRoute() {
-  const { isLoggedIn, userInfo, token } = useAuthContext();
+  const { isLoggedIn} = useAuthContext();
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
@@ -20,7 +20,6 @@ export default function ProtectedRoute() {
   }, [pathname]);
 
   if (isLoggedIn === false) {
-    console.log("navigate in protected route if condition");
     return navigate("/login", { replace: true });
   }
 

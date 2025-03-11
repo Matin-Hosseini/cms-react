@@ -1,27 +1,18 @@
 import {
-  Avatar,
-  Badge,
   FormControl,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Skeleton,
 } from "@mui/material";
 import { CiMenuFries } from "react-icons/ci";
 import { IoIosSearch } from "react-icons/io";
-import { useState } from "react";
 import { useUserContext } from "../contexts/user";
 import UserProfile from "./UserProfile";
 
 const Header = ({ onSidebar }) => {
-  const { userInfo } = useUserContext();
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const { userInfo, isGettingUserInfo } = useUserContext();
 
   return (
     <header className="header z-50">
@@ -74,8 +65,14 @@ const Header = ({ onSidebar }) => {
           </FormControl>
 
           <p className="text-sm">
-            <span className="text-lg">{userInfo.userName}</span> عزیز، به سامانه
-            پیامکی ایران اورجینال خوش اومدی!
+            <span className="text-lg">
+              {isGettingUserInfo ? (
+                <Skeleton variant="rectangular" width={210} height={30} />
+              ) : (
+                userInfo.userName
+              )}
+            </span>{" "}
+            عزیز، به سامانه پیامکی ایران اورجینال خوش اومدی!
           </p>
 
           <div className="hidden lg:block">

@@ -6,3 +6,7 @@ export const getPermissionUserByUser = async (token) =>
       token,
     })
   ).data;
+
+export const getRolePermissions = async ({ token, roleID }) =>
+  (await Api.post("/RolePermission/GetPermissionsRole", { token, roleID }))
+    .data;

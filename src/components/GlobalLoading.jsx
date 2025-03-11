@@ -9,7 +9,7 @@ const GlobalLoading = () => {
       <Dialog open={true}>
         <div className="w-56 py-3 flex flex-col items-center gap-5">
           <Logo />
-          <ThreeDotsLoading color="#ccc"/>
+          <ThreeDotsLoading color="#ccc" />
         </div>
       </Dialog>
     </>

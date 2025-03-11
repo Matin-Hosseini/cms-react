@@ -3,11 +3,10 @@ const Home = lazy(() => import("./pages/Home"));
 const Customers = lazy(() => import("./pages/Customers"));
 const Login = lazy(() => import("./pages/login"));
 
-const ProtectedRoute = lazy(() => import("./utils/ProtectedRoute"));
 const IsProgressing = lazy(() => import("./pages/IsProgressing"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Sms = lazy(() => import("./pages/Sms"));
-const Users = lazy(() => import("./pages/Users"));
+const Accessibility = lazy(() => import("./pages/Accessibility"));
 const WithAuth = lazy(() => import("./HOCs/withPermission"));
 const DoesNotHaveAccess = lazy(() => import("./pages/DoesNotHaveAccess"));
 const Role = lazy(() => import("./pages/Role"));
@@ -17,90 +16,54 @@ const CupDetails = lazy(() => import("./pages/Cup/Components/CupDetails"));
 const CallCenter = lazy(() => import("./pages/CallCenter"));
 const Calculator = lazy(() => import("./pages/Calculator"));
 const UserSettings = lazy(() => import("./pages/UserSettings"));
+const RootLayout = lazy(() => import("./layouts/root"));
+
+import PrivateRoute from "./contexts/PrivateRoute";
 
 const routes = [
   { path: "/login", element: <Login /> },
   {
-    path: "",
-    element: <ProtectedRoute />,
+    path: "/",
+    element: <RootLayout />,
     children: [
-      // {
-      //   path: "/customers",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <Customers />
-      //     </DoesNotHaveAccess>
-      //   ),
-      // },
-      // {
-      //   path: "/cup",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <Cup />
-      //     </DoesNotHaveAccess>
-      //   ),
-      //   children: [{ path: ":cupId", element: <CupDetails /> }],
-      // },
       {
-        path: "/sms",
+        path: "sms",
         element: (
-          <DoesNotHaveAccess>
+          <PrivateRoute
+            routePermissions={[
+              "SendSmsToAnyOne",
+              "AddNewTextMessage",
+              "GetAllTextMessage",
+              "RemoveCustomer",
+              "SendListSmsToAnyOne",
+              "RemoveAllPostedSmsLog",
+              "ShowAllPostedSmsLog",
+              "RemoveTextMessage",
+              "SendSmsForCallCenter",
+              "SendSmsWithCategory",
+              "Can See All Log SMS",
+              "EditTextMessage",
+            ]}
+          >
             <Sms />
-          </DoesNotHaveAccess>
+          </PrivateRoute>
         ),
       },
       {
-        path: "/users",
+        path: "accessibility",
         element: (
-          <DoesNotHaveAccess>
-            <Users />
-          </DoesNotHaveAccess>
+          <PrivateRoute
+            routePermissions={[
+              "GetAllUsers",
+              "GetRole",
+              "EditRole",
+              "GetPermissionsRole",
+            ]}
+          >
+            <Accessibility />
+          </PrivateRoute>
         ),
       },
-      {
-        path: "/user-settings",
-        element: (
-          // <DoesNotHaveAccess>
-          <UserSettings />
-          // </DoesNotHaveAccess>
-        ),
-      },
-      // {
-      //   path: "/tables",
-      //   element: <Tables />,
-      // },
-      // {
-      //   path: "/permissions",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <IsProgressing />
-      //     </DoesNotHaveAccess>
-      //   ),
-      // },
-      // {
-      //   path: "/permissions",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <IsProgressing />
-      //     </DoesNotHaveAccess>
-      //   ),
-      // },
-      // {
-      //   path: "/roles",
-      //   element: (
-      //     <DoesNotHaveAccess>
-      //       <IsProgressing />
-      //     </DoesNotHaveAccess>
-      //   ),
-      // },
-      // {
-      //   path: "/call-center",
-      //   element: <CallCenter />,
-      // },
-      // {
-      //   path: "/calculator",
-      //   element: <Calculator />,
-      // },
       { path: "/", element: <Home /> },
       { path: "*", element: <NotFound /> },
     ],
